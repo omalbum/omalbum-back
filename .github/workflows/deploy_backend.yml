@@ -1,0 +1,21 @@
+name: remote ssh command
+on:
+  create:
+    tags:
+      - v*
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        script: bash -x /home/deployer/teleoma-infra/scripts/teleoma-api.sh ${{ steps.get_version.outputs.VERSION }} >> /var/log/teleoma/teleoma-deployer
+        key: ${{ secrets.KEY }}

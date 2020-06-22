@@ -35,11 +35,9 @@ func createDBWithUserAndCook() (*db.Database, func() error) {
 		UserName:       "gorra",
 		HashedPassword: crypto.HashAndSalt("gorra"),
 		Email:          "gorra15@gmail.com",
-		IsAdmin : true,
+		IsAdmin:        true,
 	}
 	_ = userRepo.Create(&userAdmin)
-
-
 
 	return database, database.Close
 }
@@ -56,7 +54,7 @@ func TestCanGetUserOwnInfo(t *testing.T) {
 	})
 	c.Set(params.IdentityKeyID, uint(1))
 
-	NewUserController(d, permissions.NewManager(d),  mailer.NewMock()).GetUser(c)
+	NewUserController(d, permissions.NewManager(d), mailer.NewMock()).GetUser(c)
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
@@ -88,7 +86,7 @@ func TestCannotGetUserOthersInfoBecauseItIsNotAdmin(t *testing.T) {
 	})
 	c.Set(params.IdentityKeyID, uint(1))
 
-	NewUserController(d, permissions.NewManager(d),  mailer.NewMock()).GetUser(c)
+	NewUserController(d, permissions.NewManager(d), mailer.NewMock()).GetUser(c)
 	assert.Equal(t, http.StatusForbidden, w.Code)
 }
 

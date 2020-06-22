@@ -37,6 +37,7 @@ func CreateAdminUser(db *db.Database) {
 		Email:            "admin@gmail.com",
 		RegistrationDate: time.Now(),
 		LastActiveDate:   time.Now(),
+		IsAdmin:          true,
 	}
 	_ = userRepo.Create(&userAdmin)
 }
@@ -52,8 +53,8 @@ func CreateAnonymousUser(db *db.Database) {
 		LastActiveDate:   time.Now(),
 		Name:             "",
 		LastName:         "",
-		Cellphone:        "",
 		Email:            "anonymous@teleoma.com.ar",
+		BirthDate:        time.Now(),
 	}
 	db.DB.Create(&anonymousUser)
 

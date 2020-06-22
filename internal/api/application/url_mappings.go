@@ -16,7 +16,6 @@ func MapURLs(app *Application, router *gin.Engine) {
 		})
 
 		// Authentication endpoints
-
 		// Login
 		v1.POST("/auth/login", app.AuthMiddleware.LoginHandler)
 		// Refresh token

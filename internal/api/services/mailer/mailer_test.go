@@ -32,7 +32,7 @@ func TestSendSuccessfulRegistrationDriver(t *testing.T) {
 
 	mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
 
-	mailer.SendSuccessfulRegistration( "algo@nada.com", "pepe")
+	mailer.SendSuccessfulRegistration("algo@nada.com", "pepe")
 
 	res := sendGridRestClientMock.(*sendgrid.RestClientMock)
 	assert.Equal(t, Subject, res.Subject)
@@ -49,7 +49,7 @@ func TestSendSuccessfulRegistrationCook(t *testing.T) {
 
 	mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
 
-	mailer.SendSuccessfulRegistration( "algo@nada.com", "pepe")
+	mailer.SendSuccessfulRegistration("algo@nada.com", "pepe")
 
 	res := sendGridRestClientMock.(*sendgrid.RestClientMock)
 	assert.Equal(t, Subject, res.Subject)

@@ -1,6 +1,5 @@
 module github.com/miguelsotocarlos/teleoma
 
-
 go 1.14
 
 require (
@@ -15,4 +14,5 @@ require (
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
+	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
 )

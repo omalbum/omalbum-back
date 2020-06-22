@@ -10,7 +10,6 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
 	"strings"
-	"time"
 )
 
 type Service interface {
@@ -49,12 +48,11 @@ func (s *service) GetByUser(user *domain.User) (*domain.UserApp, error) {
 
 func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
 	return &domain.UserApp{
-		UserID:    user.ID,
-		UserName:  user.UserName,
-		Name:      user.Name,
-		LastName:  user.LastName,
-		Cellphone: user.Cellphone,
-		Email:     user.Email,
+		UserID:   user.ID,
+		UserName: user.UserName,
+		Name:     user.Name,
+		LastName: user.LastName,
+		Email:    user.Email,
 	}
 }
 func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) error {
@@ -67,35 +65,30 @@ func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.Registrat
 	updatedProfile.UserName = currentProfile.UserName // this cannot be changed
 
 	err = updatedProfile.ValidateWithoutPassword()
-	logger := crud.NewLogger(s.database)
 	if err != nil {
-		updatedProfile.Password = ""
-		logger.LogAnonymousAction("update profile failed: validation error", updatedProfile)
+		//updatedProfile.Password = ""
+		//logger.LogUserAction(userID,"update profile failed: validation error",http.StatusBadRequest, "PUT", "")
 		return messages.NewValidation(err)
 	}
 
 	// Update User and address
-	user, err := s.UpdateUser(userID, &updatedProfile)
+	_, err = s.UpdateUser(userID, &updatedProfile)
 	if err != nil {
-		logger.LogAnonymousAction("update profile failed: repeated email", updatedProfile)
+		//logger.LogAnonymousAction("update profile failed: repeated email", updatedProfile)
 		return messages.NewConflict("email_already_used", "email already used")
 	}
 
-	// log user action
-	logger.LogUserActionAtTime(user.ID, "user profile updated", "", time.Now())
 	return nil
 }
 
-// ojo que permite cambiar username esta
 func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error) {
 	userRepo := crud.NewDatabaseUserRepo(s.database)
 	user := domain.User{
-		Model:     gorm.Model{ID: userId},
-		UserName:  strings.ToLower(updatedProfile.UserName),
-		Name:      updatedProfile.Name,
-		LastName:  updatedProfile.LastName,
-		Cellphone: updatedProfile.Cellphone,
-		Email:     strings.ToLower(updatedProfile.Email),
+		Model:    gorm.Model{ID: userId},
+		UserName: strings.ToLower(updatedProfile.UserName),
+		Name:     updatedProfile.Name,
+		LastName: updatedProfile.LastName,
+		Email:    strings.ToLower(updatedProfile.Email),
 	}
 	err := userRepo.Update(&user)
 	return &user, err

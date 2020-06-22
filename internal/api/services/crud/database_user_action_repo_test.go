@@ -26,7 +26,7 @@ func TestGetActionsByUserId(t *testing.T) {
 	userRepo := NewDatabaseUserRepo(d)
 	d.DB.Create(&domain.User{
 		UserName: "ivan",
-		Email: "ivansadofschi@gmail.com",
+		Email:    "ivansadofschi@gmail.com",
 	})
 
 	user := userRepo.GetByUserName("ivan")
@@ -35,17 +35,15 @@ func TestGetActionsByUserId(t *testing.T) {
 	//timeNow:= string(time.Now())
 
 	_ = userActionRepo.Create(&domain.UserAction{
-		UserId:    user.ID,
-		Date:      time.Now(),
-		Action:    "hizo una acción de prueba",
-		ExtraData: "(?)",
+		UserId:      user.ID,
+		Date:        time.Now(),
+		Description: "hizo una acción de prueba",
 	})
 
 	_ = userActionRepo.Create(&domain.UserAction{
-		UserId:    user.ID,
-		Date:      time.Now(),
-		Action:    "hizo otra accion de prueba",
-		ExtraData: "(?)",
+		UserId:      user.ID,
+		Date:        time.Now(),
+		Description: "hizo otra accion de prueba",
 	})
 
 	userActions := userActionRepo.GetActionsByUserID(1)
@@ -54,8 +52,7 @@ func TestGetActionsByUserId(t *testing.T) {
 	assert.Equal(t, user.ID, userAction.UserId)
 	assert.Equal(t, uint(1), userAction.ID)
 	//assert.Equal(t,timeNow, userAction.Date)
-	assert.Equal(t, "hizo una acción de prueba", userAction.Action)
-	assert.Equal(t, "(?)", userAction.ExtraData)
+	assert.Equal(t, "hizo una acción de prueba", userAction.Description)
 
 }
 
@@ -66,17 +63,16 @@ func TestGetById(t *testing.T) {
 	userRepo := NewDatabaseUserRepo(d)
 	d.DB.Create(&domain.User{
 		UserName: "ivan",
-		Email: "ivansadofschi@gmail.com",
+		Email:    "ivansadofschi@gmail.com",
 	})
 	user := userRepo.GetByUserName("ivan")
 
 	userActionRepo := NewDatabaseUserActionRepo(d)
 
 	ua := domain.UserAction{
-		UserId:    user.ID,
-		Date:      time.Now(),
-		Action:    "hizo una acción de prueba",
-		ExtraData: "(?)",
+		UserId:      user.ID,
+		Date:        time.Now(),
+		Description: "hizo una acción de prueba",
 	}
 	_ = userActionRepo.Create(&ua)
 
@@ -84,8 +80,7 @@ func TestGetById(t *testing.T) {
 	assert.Equal(t, user.ID, userAction.UserId)
 	assert.Equal(t, uint(1), userAction.ID)
 	//assert.Equal(t,timeNow, userAction.Date)
-	assert.Equal(t, "hizo una acción de prueba", userAction.Action)
-	assert.Equal(t, "(?)", userAction.ExtraData)
+	assert.Equal(t, "hizo una acción de prueba", userAction.Description)
 	assert.Nil(t, userActionRepo.GetByID(12345))
 }
 
@@ -96,28 +91,26 @@ func TestGetAll(t *testing.T) {
 	userRepo := NewDatabaseUserRepo(d)
 	d.DB.Create(&domain.User{
 		UserName: "ivan",
-		Email: "ivan@gmail.com",
+		Email:    "ivan@gmail.com",
 	})
 	d.DB.Create(&domain.User{
 		UserName: "charly",
-		Email: "charly@gmail.com",
+		Email:    "charly@gmail.com",
 	})
 	ivan := userRepo.GetByUserName("ivan")
 	charly := userRepo.GetByUserName("charly")
 	userActionRepo := NewDatabaseUserActionRepo(d)
 
 	_ = userActionRepo.Create(&domain.UserAction{
-		UserId:    ivan.ID,
-		Date:      time.Now(),
-		Action:    "hizo una acción de prueba",
-		ExtraData: "(?)",
+		UserId:      ivan.ID,
+		Date:        time.Now(),
+		Description: "hizo una acción de prueba",
 	})
 
 	_ = userActionRepo.Create(&domain.UserAction{
-		UserId:    charly.ID,
-		Date:      time.Now(),
-		Action:    "hizo una acción de prueba",
-		ExtraData: "(?)",
+		UserId:      charly.ID,
+		Date:        time.Now(),
+		Description: "hizo una acción de prueba",
 	})
 
 	userActions := userActionRepo.GetAll()

@@ -20,12 +20,14 @@ type RegisterController interface {
 type registerController struct {
 	database *db.Database
 	mailer   mailer.Mailer
+	logger   crud.Logger
 }
 
 func NewRegisterController(database *db.Database, mailer mailer.Mailer) RegisterController {
 	return &registerController{
 		database: database,
 		mailer:   mailer,
+		logger:   crud.NewLogger(database),
 	}
 }
 
@@ -34,11 +36,9 @@ func (r *registerController) Register(context *gin.Context) {
 	_ = context.Bind(&registrationApp)
 
 	var err = registrationApp.Validate()
-	logger := crud.NewLogger(r.database)
 
 	if err != nil {
-		registrationApp.Password = "******"
-		logger.LogAnonymousAction("registration failed: validation error", registrationApp)
+		r.logger.LogAnonymousAction("registration failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
 		context.JSON(http.StatusBadRequest, messages.NewValidation(err))
 		return
 	}
@@ -46,25 +46,22 @@ func (r *registerController) Register(context *gin.Context) {
 	// Create User
 	user, err := createUser(r.database, &registrationApp)
 	if err != nil {
-		registrationApp.Password = "******"
-		logger.LogAnonymousAction("registration failed: user already exists", registrationApp)
+		r.logger.LogAnonymousAction("registration failed: user already exists", http.StatusConflict, context.Request.Method, context.Request.URL.String())
 		context.JSON(http.StatusConflict, messages.New("user_already_exists", "user already exists"))
 		return
 	}
-
-	// log user action
-	logger.LogUserActionAtTime(user.ID, "user registered", "", user.RegistrationDate)
 
 	// Send the mail in a non-blocking way
 	// comento porque por ahora no usamos esto
 	// registrationJob := mailer.NewRegistrationJob(r.mailer, registrationApp.Email, registrationApp.Name)
 	// jobrunner.Now(registrationJob)
-
+	r.logger.LogUserAction(user.ID, "user registered", http.StatusOK, context.Request.Method, context.Request.URL.String())
 	context.JSON(http.StatusCreated, gin.H{"user_id": user.ID})
 }
 
 func createUser(database *db.Database, registrationApp *domain.RegistrationApp) (*domain.User, error) {
 	userRepo := crud.NewDatabaseUserRepo(database)
+	birthDate, _ := time.Parse("2006-01-02", registrationApp.BirthDate)
 	user := domain.User{
 		UserName:         strings.ToLower(registrationApp.UserName),
 		HashedPassword:   crypto.HashAndSalt(registrationApp.Password),
@@ -72,7 +69,7 @@ func createUser(database *db.Database, registrationApp *domain.RegistrationApp) 
 		LastActiveDate:   time.Now(),
 		Name:             registrationApp.Name,
 		LastName:         registrationApp.LastName,
-		Cellphone:        registrationApp.Cellphone,
+		BirthDate:        birthDate,
 		Email:            strings.ToLower(registrationApp.Email),
 	}
 	err := userRepo.Create(&user)

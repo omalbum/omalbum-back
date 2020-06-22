@@ -13,20 +13,29 @@ type User struct {
 	gorm.Model
 	UserName         string `gorm:"unique;size:20"`
 	HashedPassword   string
-	RegistrationDate time.Time
-	LastActiveDate   time.Time
+	Email            string `gorm:"unique;"`
 	Name             string
 	LastName         string
-	Cellphone        string // string por si alguien pone un numero que empieza con 00 o +
-	Email            string `gorm:"unique;"`
-	Notes            string
+	BirthDate        time.Time
+	Gender           string
+	Country          string
+	Province         string
+	Department       string
+	Location         string
+	School           string
+	IsStudent        bool
+	SchoolYear       uint
+	RegistrationDate time.Time
+	LastActiveDate   time.Time
 	IsAdmin          bool
 }
 
 type UserAction struct {
 	gorm.Model
-	UserId    uint
-	Date      time.Time
-	Action    string
-	ExtraData string `gorm:"type:text"`
+	UserId      uint
+	Date        time.Time
+	StatusCode  uint
+	Method      string
+	Resource    string
+	Description string
 }

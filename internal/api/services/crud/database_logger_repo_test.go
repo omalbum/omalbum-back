@@ -27,7 +27,7 @@ func TestLogger(t *testing.T) {
 
 	database.DB.Create(&domain.User{
 		UserName: "ivan",
-		Email: "ivansadofschi@gmail.com",
+		Email:    "ivansadofschi@gmail.com",
 	})
 
 	ivan := userRepo.GetByUserName("ivan")

@@ -34,7 +34,7 @@ func TestCanGetByUserID(t *testing.T) {
 	d, closeDb := createDBWithUserAndCook()
 	defer check.Check(closeDb)
 
-	userApp, _ := NewService(d,  mailer.NewMock()).GetByUserID(1)
+	userApp, _ := NewService(d, mailer.NewMock()).GetByUserID(1)
 	assert.NotNil(t, userApp)
 }
 
@@ -50,7 +50,7 @@ func TestCanGetByUser(t *testing.T) {
 	d, closeDb := createDBWithUserAndCook()
 	defer check.Check(closeDb)
 
-	userApp, _ := NewService(d,  mailer.NewMock()).GetByUser(crud.NewDatabaseUserRepo(d).GetByUserName("all"))
+	userApp, _ := NewService(d, mailer.NewMock()).GetByUser(crud.NewDatabaseUserRepo(d).GetByUserName("all"))
 	assert.NotNil(t, userApp)
 }
 
@@ -84,7 +84,6 @@ func TestServiceChangePassword(t *testing.T) {
 	assert.False(t, crypto.IsHashedPasswordEqualWithPlainPassword(anotherCook.HashedPassword, "chocotorta"))
 }
 
-
 func TestServiceUpdateUser(t *testing.T) {
 	database := db.NewInMemoryDatabase()
 	_ = database.Open()
@@ -94,16 +93,16 @@ func TestServiceUpdateUser(t *testing.T) {
 
 	userRepo := crud.NewDatabaseUserRepo(database)
 	aUser := domain.User{
-		UserName: "juancito",
-		Name:     "juan",
-		LastName: "cito",
+		UserName:  "juancito",
+		Name:      "juan",
+		LastName:  "cito",
 		Cellphone: "1234579",
 		Email:     "juancito@gmail.com",
 	}
 	anotherUser := domain.User{
-		UserName: "martiniano",
-		Name:     "Martiniano",
-		LastName: "Molina",
+		UserName:  "martiniano",
+		Name:      "Martiniano",
+		LastName:  "Molina",
 		Cellphone: "1234579",
 		Email:     "mmolina@gmail.com",
 	}
@@ -139,9 +138,9 @@ func TestServiceResetPassword(t *testing.T) {
 
 	userRepo := crud.NewDatabaseUserRepo(database)
 	aUser := domain.User{
-		UserName: "juancito",
-		Name:     "juan",
-		LastName: "cito",
+		UserName:  "juancito",
+		Name:      "juan",
+		LastName:  "cito",
 		Cellphone: "1234579",
 		Email:     "juancito@gmail.com",
 	}

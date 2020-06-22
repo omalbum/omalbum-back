@@ -5,6 +5,7 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/users"
@@ -23,13 +24,16 @@ type userController struct {
 	database *db.Database
 	manager  permissions.Manager
 	mailer   mailer.Mailer
+	logger   crud.Logger
 }
 
 func NewUserController(database *db.Database, manager permissions.Manager, mailer mailer.Mailer) UserController {
+	logger := crud.NewLogger(database)
 	return &userController{
 		database: database,
 		manager:  manager,
 		mailer:   mailer,
+		logger:   logger,
 	}
 }
 

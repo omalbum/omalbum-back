@@ -26,7 +26,7 @@ type RegistrationApp struct {
 	Password  string `json:"password"`
 	Name      string `json:"name"`
 	LastName  string `json:"last_name"`
-	Cellphone string `json:"cellphone"`
+	BirthDate string `json:"birth_date"`
 	Email     string `json:"email"`
 }
 

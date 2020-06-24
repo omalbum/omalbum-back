@@ -30,7 +30,7 @@ go build -v .
 ### Project
 ```sh
 docker build -t teleoma .
-docker run -it --rm --network host --name teleoma-running teleoma
+docker run -it --rm --network host --name mysql-teleoma teleoma
 ```
 
 ### MySQL

@@ -47,13 +47,22 @@ func (s *service) GetByUser(user *domain.User) (*domain.UserApp, error) {
 }
 
 func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
-	// TODO poner aca lo que queramos devolver
 	return &domain.UserApp{
-		UserID:   user.ID,
-		UserName: user.UserName,
-		Name:     user.Name,
-		LastName: user.LastName,
-		Email:    user.Email,
+		UserID:           user.ID,
+		UserName:         user.UserName,
+		Email:            user.Email,
+		Name:             user.Name,
+		LastName:         user.LastName,
+		BirthDate:        user.BirthDate,
+		Gender:           user.Gender,
+		IsStudent:        user.IsStudent,
+		SchoolYear:       user.SchoolYear,
+		Country:          user.Country,
+		Province:         user.Province,
+		Department:       user.Department,
+		Location:         user.Location,
+		School:           user.School,
+		RegistrationDate: user.RegistrationDate,
 	}
 }
 func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) error {

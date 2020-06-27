@@ -58,11 +58,21 @@ type UpdateProfileApp struct {
 }
 
 type UserApp struct {
-	UserID   uint   `json:"user_id"`
-	UserName string `json:"user_name"`
-	Name     string `json:"name"`
-	LastName string `json:"last_name"`
-	Email    string `json:"email"`
+	UserID           uint      `json:"user_id"`
+	UserName         string    `json:"user_name"`
+	Email            string    `json:"email"`
+	Name             string    `json:"name"`
+	LastName         string    `json:"last_name"`
+	BirthDate        time.Time `json:"birth_date"`
+	Gender           string    `json:"gender"`
+	IsStudent        bool      `json:"is_student"`
+	SchoolYear       uint      `json:"school_year"`
+	Country          string    `json:"country"`
+	Province         string    `json:"province"`
+	Department       string    `json:"department"`
+	Location         string    `json:"location"`
+	School           string    `json:"school"`
+	RegistrationDate time.Time `json:"registration_date"`
 }
 
 type PasswordWrappedApp struct {

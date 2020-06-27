@@ -9,12 +9,13 @@ type UserRepo interface {
 	GetAll() []User
 	Create(user *User) error
 	Update(user *User) error // updates a specific row, user must have ID setted
-	Delete(ID uint) error
+	Delete(userId uint) error
 }
 
 type ProblemRepo interface {
 	Create(problem *Problem) error
 	Update(problem *Problem) error // updates a specific row, problem must have ID setted
+	Delete(problemId uint) error
 }
 
 type UserProblemAttempsRepo interface {

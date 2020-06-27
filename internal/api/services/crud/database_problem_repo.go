@@ -42,3 +42,7 @@ func (dr *databaseProblemRepo) Update(problem *domain.Problem) error {
 	}
 	return nil
 }
+
+func (dr *databaseProblemRepo) Delete(problemId uint) error {
+	panic("implement me")
+}

@@ -10,6 +10,7 @@ func ValidateEmail(email string) error {
 }
 
 func (registration RegistrationApp) Validate() error {
+	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&registration,
 		validation.Field(&registration.UserName, validation.Required, validation.Length(2, 20), is.Alphanumeric),
 		validation.Field(&registration.Password, validation.Required, validation.Length(6, 20)),
@@ -19,7 +20,9 @@ func (registration RegistrationApp) Validate() error {
 	)
 }
 
+// validaciones para put de user profile
 func (registration RegistrationApp) ValidateWithoutPassword() error {
+	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&registration,
 		validation.Field(&registration.UserName, validation.Required, validation.Length(2, 20), is.Alphanumeric),
 		validation.Field(&registration.Name, validation.Required),

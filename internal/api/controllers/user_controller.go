@@ -18,6 +18,8 @@ type UserController interface {
 	PutUser(context *gin.Context)
 	PutPassword(context *gin.Context)
 	ResetPassword(context *gin.Context)
+	GetAlbum(context *gin.Context)
+	PostAnswer(context *gin.Context)
 }
 
 type userController struct {
@@ -108,4 +110,12 @@ func (u *userController) ResetPassword(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, gin.H{})
+}
+
+func (u *userController) GetAlbum(context *gin.Context) {
+	panic("implement me") //TODO
+}
+
+func (u *userController) PostAnswer(context *gin.Context) {
+	panic("implement me") //TODO
 }

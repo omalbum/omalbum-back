@@ -10,6 +10,7 @@ import (
 type AdminController interface {
 	PostProblem(context *gin.Context)
 	PutProblem(context *gin.Context)
+	DeleteProblem(context *gin.Context)
 }
 
 type adminController struct {
@@ -32,5 +33,9 @@ func (a *adminController) PostProblem(context *gin.Context) {
 }
 
 func (a *adminController) PutProblem(context *gin.Context) {
+	panic("implement me")
+}
+
+func (a *adminController) DeleteProblem(context *gin.Context) {
 	panic("implement me")
 }

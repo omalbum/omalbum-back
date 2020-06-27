@@ -11,6 +11,9 @@ func DropTables(db *db.Database) {
 	// Creates all the tables
 	db.DB.DropTableIfExists( // because of the foreing keys we must drop tables in this particular order
 		&domain.UserAction{},
+		&domain.UserProblemAttempt{},
+		&domain.ProblemTag{},
+		&domain.Problem{},
 		&domain.User{},
 	)
 }
@@ -18,8 +21,11 @@ func DropTables(db *db.Database) {
 func CreateTables(db *db.Database) {
 	// Creates all the tables
 	db.DB.CreateTable(
-		&domain.UserAction{},
 		&domain.User{},
+		&domain.Problem{},
+		&domain.UserProblemAttempt{},
+		&domain.ProblemTag{},
+		&domain.UserAction{},
 	)
 }
 

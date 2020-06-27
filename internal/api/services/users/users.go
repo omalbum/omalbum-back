@@ -47,7 +47,7 @@ func (s *service) GetByUser(user *domain.User) (*domain.UserApp, error) {
 }
 
 func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
-	panic("implement me!") // actualizar esto de acuerdo a docu del API
+	// TODO poner aca lo que queramos devolver
 	return &domain.UserApp{
 		UserID:   user.ID,
 		UserName: user.UserName,

@@ -23,7 +23,6 @@ func MapURLs(app *Application, router *gin.Engine) {
 
 		// Register endpoints
 		v1.POST("/register", app.RegisterController.Register)
-
 	}
 
 	jobs := router.Group("/jobs")

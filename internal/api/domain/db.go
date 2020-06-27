@@ -39,3 +39,31 @@ type UserAction struct {
 	Resource    string
 	Description string
 }
+
+type Problem struct {
+	gorm.Model
+	PoserId          uint
+	OmaforosPostId   uint
+	DateUploaded     time.Time
+	DateContestStart time.Time
+	DateContestEnd   time.Time
+	Statement        string
+	Answer           int
+	Annotations      string
+	IsDraft          bool
+	Hint             string
+}
+
+type UserProblemAttempt struct {
+	gorm.Model
+	UserId     uint
+	ProblemId  uint
+	Date       time.Time
+	UserAnswer int
+}
+
+type ProblemTag struct {
+	gorm.Model
+	ProblemId uint
+	Tag       string
+}

@@ -24,7 +24,15 @@ func CreateTables(db *db.Database) {
 }
 
 func CreateForeignKeys(db *db.Database) {
+
+	db.DB.Model(&domain.Problem{}).AddForeignKey("poser_id", "users(id)", "CASCADE", "CASCADE")
+
+	db.DB.Model(&domain.UserProblemAttempt{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.DB.Model(&domain.UserProblemAttempt{}).AddForeignKey("problem_id", "problems(id)", "CASCADE", "CASCADE")
+
 	db.DB.Model(&domain.UserAction{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+
+	db.DB.Model(&domain.ProblemTag{}).AddForeignKey("problem_id", "problems(id)", "CASCADE", "CASCADE")
 }
 
 func CreateAdminUser(db *db.Database) {

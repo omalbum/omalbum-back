@@ -28,6 +28,10 @@ func GetUserID(context *gin.Context) uint {
 	return GetUintValueFromParam(context, "user_id")
 }
 
+func GetProblemID(context *gin.Context) uint {
+	return GetUintValueFromParam(context, "problem_id")
+}
+
 // Returns the caller id, extracted from the token
 func GetCallerID(context *gin.Context) uint {
 	IdentityKeyID, _ := context.Get(IdentityKeyID)

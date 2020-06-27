@@ -15,7 +15,7 @@ type UserRepo interface {
 type ProblemRepo interface {
 	Create(problem *Problem) error
 	Update(problem *Problem) error // updates a specific row, problem must have ID setted
-	Delete(problemId uint) error
+	Delete(problemId uint) error   // deletes a problem by Id
 }
 
 type UserProblemAttempsRepo interface {

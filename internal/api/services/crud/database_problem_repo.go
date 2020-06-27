@@ -44,5 +44,8 @@ func (dr *databaseProblemRepo) Update(problem *domain.Problem) error {
 }
 
 func (dr *databaseProblemRepo) Delete(problemId uint) error {
-	panic("implement me")
+	if problemId == 0 { // esto es clave para no borrar la tabla entera accidentalmente
+		return messages.New("problem_id_must_be_nonzero", "problem id must be nonzero")
+	}
+	return dr.database.DB.Where(&domain.Problem{Model: gorm.Model{ID: problemId}}).Delete(&domain.Problem{Model: gorm.Model{ID: problemId}}).Error
 }

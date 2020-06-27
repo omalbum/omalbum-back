@@ -47,6 +47,7 @@ func (s *service) GetByUser(user *domain.User) (*domain.UserApp, error) {
 }
 
 func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
+	panic("implement me!") // actualizar esto de acuerdo a docu del API
 	return &domain.UserApp{
 		UserID:   user.ID,
 		UserName: user.UserName,
@@ -83,6 +84,7 @@ func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.Registrat
 
 func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error) {
 	userRepo := crud.NewDatabaseUserRepo(s.database)
+	panic("implement me!") // actualizar esto de acuerdo a docu del API
 	user := domain.User{
 		Model:    gorm.Model{ID: userId},
 		UserName: strings.ToLower(updatedProfile.UserName),

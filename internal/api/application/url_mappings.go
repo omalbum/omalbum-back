@@ -23,6 +23,19 @@ func MapURLs(app *Application, router *gin.Engine) {
 
 		// Register endpoints
 		v1.POST("/register", app.RegisterController.Register)
+
+		//Problems endpoints
+
+		//Users endpoints
+		v1.GET("/users/:user_id/profile", app.AuthMiddleware.MiddlewareFunc(), app.UserController.GetUser)
+		v1.PUT("/users/:user_id/profile", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PutUser)
+		v1.PUT("/users/:user_id/password", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PutPassword)
+		v1.POST("/users/password/reset", app.UserController.ResetPassword) //TODO este no esta funcional sin configurar el envio de emails!
+
+		//Admin endpoints
+		//v1.POST("/admin/problem", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.PostProblem)
+		v1.POST("/admin/problem", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.PostProblem)
+
 	}
 
 	jobs := router.Group("/jobs")

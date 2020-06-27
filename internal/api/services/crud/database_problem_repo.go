@@ -1,0 +1,44 @@
+package crud
+
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
+	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+)
+
+type databaseProblemRepo struct {
+	database *db.Database
+}
+
+func NewDatabaseProblemRepo(database *db.Database) domain.ProblemRepo {
+	return &databaseProblemRepo{
+		database: database,
+	}
+}
+
+func (dr *databaseProblemRepo) GetByID(ID uint) *domain.Problem {
+	if ID == 0 {
+		return nil //needed to avoid an empty condition in Where
+	}
+	var problem domain.Problem
+	if dr.database.DB.Where(&domain.Problem{Model: gorm.Model{ID: ID}}).First(&problem).RecordNotFound() {
+		return nil
+	}
+
+	return &problem
+}
+
+func (dr *databaseProblemRepo) Create(problem *domain.Problem) error {
+	return dr.database.DB.Create(problem).Error
+}
+
+func (dr *databaseProblemRepo) Update(problem *domain.Problem) error {
+	if problem.ID == 0 {
+		return messages.New("problem_id_must_be_nonzero", "problem id must be nonzero")
+	}
+	if dr.database.DB.Model(problem).Update(problem).RowsAffected == 0 {
+		return messages.New("user_not_found", "user not found")
+	}
+	return nil
+}

@@ -65,12 +65,20 @@ func createUser(database *db.Database, registrationApp *domain.RegistrationApp) 
 	user := domain.User{
 		UserName:         strings.ToLower(registrationApp.UserName),
 		HashedPassword:   crypto.HashAndSalt(registrationApp.Password),
-		RegistrationDate: time.Now(),
-		LastActiveDate:   time.Now(),
 		Name:             registrationApp.Name,
 		LastName:         registrationApp.LastName,
 		BirthDate:        birthDate,
 		Email:            strings.ToLower(registrationApp.Email),
+		Gender:           registrationApp.Gender,
+		IsStudent:        registrationApp.IsStudent,
+		SchoolYear:       registrationApp.SchoolYear,
+		Country:          registrationApp.Country,
+		Province:         registrationApp.Province,
+		Department:       registrationApp.Department,
+		Location:         registrationApp.Location,
+		School:           registrationApp.School,
+		RegistrationDate: time.Now(),
+		LastActiveDate:   time.Now(),
 	}
 	err := userRepo.Create(&user)
 

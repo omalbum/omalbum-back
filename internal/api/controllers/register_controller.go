@@ -7,10 +7,8 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/users"
 	"net/http"
-	"strings"
-	"time"
 )
 
 type RegisterController interface {
@@ -44,7 +42,7 @@ func (r *registerController) Register(context *gin.Context) {
 	}
 
 	// Create User
-	user, err := createUser(r.database, &registrationApp)
+	user, err := users.NewService(r.database, r.mailer).CreateUser(registrationApp)
 	if err != nil {
 		r.logger.LogAnonymousAction("registration failed: user already exists", http.StatusConflict, context.Request.Method, context.Request.URL.String())
 		context.JSON(http.StatusConflict, messages.New("user_already_exists", "user already exists"))
@@ -57,30 +55,4 @@ func (r *registerController) Register(context *gin.Context) {
 	// jobrunner.Now(registrationJob)
 	r.logger.LogUserAction(user.ID, "user registered", http.StatusOK, context.Request.Method, context.Request.URL.String())
 	context.JSON(http.StatusCreated, gin.H{"user_id": user.ID})
-}
-
-func createUser(database *db.Database, registrationApp *domain.RegistrationApp) (*domain.User, error) {
-	userRepo := crud.NewDatabaseUserRepo(database)
-	birthDate, _ := time.Parse("2006-01-02", registrationApp.BirthDate)
-	user := domain.User{
-		UserName:         strings.ToLower(registrationApp.UserName),
-		HashedPassword:   crypto.HashAndSalt(registrationApp.Password),
-		Name:             registrationApp.Name,
-		LastName:         registrationApp.LastName,
-		BirthDate:        birthDate,
-		Email:            strings.ToLower(registrationApp.Email),
-		Gender:           registrationApp.Gender,
-		IsStudent:        registrationApp.IsStudent,
-		SchoolYear:       registrationApp.SchoolYear,
-		Country:          registrationApp.Country,
-		Province:         registrationApp.Province,
-		Department:       registrationApp.Department,
-		Location:         registrationApp.Location,
-		School:           registrationApp.School,
-		RegistrationDate: time.Now(),
-		LastActiveDate:   time.Now(),
-	}
-	err := userRepo.Create(&user)
-
-	return &user, err
 }

@@ -10,9 +10,11 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
 	"strings"
+	"time"
 )
 
 type Service interface {
+	CreateUser(registrationApp domain.RegistrationApp) (*domain.User, error)
 	GetByUserID(userID uint) (*domain.UserApp, error)
 	GetByUser(user *domain.User) (*domain.UserApp, error)
 	UpdateUserProfile(userID uint, user domain.RegistrationApp) error
@@ -31,6 +33,32 @@ func NewService(database *db.Database, mailer mailer.Mailer) Service {
 		database: database,
 		mailer:   mailer,
 	}
+}
+
+func (s *service) CreateUser(registrationApp domain.RegistrationApp) (*domain.User, error) {
+	userRepo := crud.NewDatabaseUserRepo(s.database)
+	birthDate, _ := time.Parse("2006-01-02", registrationApp.BirthDate)
+	user := domain.User{
+		UserName:         strings.ToLower(registrationApp.UserName),
+		HashedPassword:   crypto.HashAndSalt(registrationApp.Password),
+		Name:             registrationApp.Name,
+		LastName:         registrationApp.LastName,
+		BirthDate:        birthDate,
+		Email:            strings.ToLower(registrationApp.Email),
+		Gender:           registrationApp.Gender,
+		IsStudent:        registrationApp.IsStudent,
+		SchoolYear:       registrationApp.SchoolYear,
+		Country:          registrationApp.Country,
+		Province:         registrationApp.Province,
+		Department:       registrationApp.Department,
+		Location:         registrationApp.Location,
+		School:           registrationApp.School,
+		RegistrationDate: time.Now(),
+		LastActiveDate:   time.Now(),
+	}
+	err := userRepo.Create(&user)
+
+	return &user, err
 }
 
 func (s *service) GetByUserID(userID uint) (*domain.UserApp, error) {

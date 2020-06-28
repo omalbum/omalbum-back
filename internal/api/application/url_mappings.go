@@ -27,7 +27,7 @@ func MapURLs(app *Application, router *gin.Engine) {
 		// Problems endpoints
 		v1.GET("/problems/next", app.ProblemsController.GetNextProblems)
 		v1.GET("/problems/current", app.ProblemsController.GetCurrentProblems)
-		v1.GET("/problems/problem/:problem_id", app.ProblemsController.GetProblem)
+		v1.GET("/problems/problem/:problem_id", app.UserProblemMiddleware.ViewAuthCheck, app.ProblemsController.GetProblem)
 		v1.GET("/problems/all", app.ProblemsController.GetAllProblems)
 
 		// Users endpoints

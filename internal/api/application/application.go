@@ -16,12 +16,13 @@ import (
 )
 
 type Application struct {
-	AuthMiddleware     middlewares.AuthMiddleware
-	AdminMiddleware    middlewares.AdminMiddleware
-	RegisterController controllers.RegisterController
-	UserController     controllers.UserController
-	AdminController    controllers.AdminController
-	ProblemsController controllers.ProblemsController
+	AuthMiddleware        middlewares.AuthMiddleware
+	AdminMiddleware       middlewares.AdminMiddleware
+	UserProblemMiddleware middlewares.UserProblemMiddleware
+	RegisterController    controllers.RegisterController
+	UserController        controllers.UserController
+	AdminController       controllers.AdminController
+	ProblemsController    controllers.ProblemsController
 }
 
 func BuildApplication(db *db.Database) *Application {
@@ -37,17 +38,19 @@ func BuildApplication(db *db.Database) *Application {
 
 	authMiddleware := middlewares.NewAuthMiddleware(db)
 	adminMiddleware := middlewares.NewAdminMiddleware(db, manager)
+	userProblemMiddleware := middlewares.NewUserProblemMiddleware(db, manager)
 	registerController := controllers.NewRegisterController(db, mail)
 	userController := controllers.NewUserController(db, manager, mail)
 	adminController := controllers.NewAdminController(db, manager)
 	problemsController := controllers.NewProblemsController(db, manager)
 	return &Application{
-		AuthMiddleware:     authMiddleware,
-		AdminMiddleware:    adminMiddleware,
-		RegisterController: registerController,
-		UserController:     userController,
-		AdminController:    adminController,
-		ProblemsController: problemsController,
+		AuthMiddleware:        authMiddleware,
+		AdminMiddleware:       adminMiddleware,
+		UserProblemMiddleware: userProblemMiddleware,
+		RegisterController:    registerController,
+		UserController:        userController,
+		AdminController:       adminController,
+		ProblemsController:    problemsController,
 	}
 }
 

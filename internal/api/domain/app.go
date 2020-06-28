@@ -117,3 +117,12 @@ type ProblemAdminApp struct {
 	Deadline         time.Time `json:"deadline"`
 	IsDraft          bool      `json:"is_draft"`
 }
+
+type ProblemApp struct {
+	ProblemId      uint      `json:"problem_id"`
+	Statement      string    `json:"statement"`
+	OmaforosPostId uint      `json:"omaforos_post_id"`
+	Tags           []string  `json:"tags"`
+	ReleaseDate    time.Time `json:"release_date"`
+	Deadline       time.Time `json:"deadline"`
+}

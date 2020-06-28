@@ -3,8 +3,12 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/problems"
+	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
+	"net/http"
 )
 
 type ProblemsController interface {
@@ -38,7 +42,13 @@ func (p problemsController) GetCurrentProblems(context *gin.Context) {
 }
 
 func (p problemsController) GetProblem(context *gin.Context) {
-	panic("implement me") //TODO
+	problemId := params.GetProblemID(context)
+	problem, err := problems.NewService(p.database).GetProblemById(problemId)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, problem)
 }
 
 func (p problemsController) GetAllProblems(context *gin.Context) {

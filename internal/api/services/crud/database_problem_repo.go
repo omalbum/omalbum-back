@@ -17,7 +17,7 @@ func NewDatabaseProblemRepo(database *db.Database) domain.ProblemRepo {
 	}
 }
 
-func (dr *databaseProblemRepo) GetByID(ID uint) *domain.Problem {
+func (dr *databaseProblemRepo) GetById(ID uint) *domain.Problem {
 	if ID == 0 {
 		return nil //needed to avoid an empty condition in Where
 	}

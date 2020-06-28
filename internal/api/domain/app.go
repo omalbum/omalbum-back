@@ -104,7 +104,8 @@ type AlbumApp struct {
 	Album []ProblemStatsApp `json:"album"`
 }
 
-type NewProblemApp struct {
+type ProblemAdminApp struct {
+	ProblemId        uint      `json:"problem_id"`
 	Statement        string    `json:"statement"`
 	Answer           int       `json:"answer"`
 	OmaforosPostId   uint      `json:"omaforos_post_id"`

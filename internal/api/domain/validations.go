@@ -31,7 +31,7 @@ func (registration RegistrationApp) ValidateWithoutPassword() error {
 	)
 }
 
-func (newProblem NewProblemApp) Validate() error {
+func (newProblem ProblemAdminApp) Validate() error {
 	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&newProblem,
 		validation.Field(&newProblem.Statement, validation.Required),

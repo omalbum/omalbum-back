@@ -9,13 +9,30 @@ import (
 )
 
 type Service interface {
-	CreateProblem(poserId uint, newProblem domain.NewProblemApp) (*domain.Problem, error)
-	UpdateProblem(problemId uint, updatedProblem domain.NewProblemApp) (*domain.Problem, error)
+	GetProblem(problemId uint) (domain.ProblemAdminApp, error)
+	CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error)
+	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.Problem, error)
 	DeleteProblem(problemId uint) error
 }
 
 type service struct {
 	database *db.Database
+}
+
+func (s *service) GetProblem(problemId uint) (domain.ProblemAdminApp, error) {
+	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
+	if problem == nil {
+		return domain.ProblemAdminApp{}, messages.NewNotFound("problem_not_found", "problem not found")
+	}
+	problemAdminApp := problemToProblemAdminApp(*problem)
+	problemAdminApp.ProblemId = problemId
+	problemTags := crud.NewDatabaseProblemTagRepo(s.database).GetByProblemId(problemId)
+	var tags = make([]string, len(problemTags))
+	for i, problemTag := range problemTags {
+		tags[i] = problemTag.Tag
+	}
+	problemAdminApp.Tags = tags
+	return problemAdminApp, nil
 }
 
 func (s *service) DeleteProblem(problemId uint) error {
@@ -32,13 +49,13 @@ func NewService(database *db.Database) Service {
 	}
 }
 
-func (s *service) CreateProblem(poserId uint, newProblem domain.NewProblemApp) (*domain.Problem, error) {
+func (s *service) CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error) {
 	problemRepo := crud.NewDatabaseProblemRepo(s.database)
 	err := newProblem.Validate()
 	if err != nil {
 		return nil, messages.NewValidation(err)
 	}
-	problem := problemAppToProblem(newProblem)
+	problem := problemAdminAppToProblem(newProblem)
 	problem.PoserId = poserId
 	err = problemRepo.Create(&problem)
 	if err != nil {
@@ -49,13 +66,13 @@ func (s *service) CreateProblem(poserId uint, newProblem domain.NewProblemApp) (
 	return &problem, nil
 }
 
-func (s *service) UpdateProblem(problemId uint, updatedProblem domain.NewProblemApp) (*domain.Problem, error) {
+func (s *service) UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.Problem, error) {
 	problemRepo := crud.NewDatabaseProblemRepo(s.database)
 	err := updatedProblem.Validate()
 	if err != nil {
 		return nil, messages.NewValidation(err)
 	}
-	problem := problemAppToProblem(updatedProblem)
+	problem := problemAdminAppToProblem(updatedProblem)
 	problem.ID = problemId
 	err = problemRepo.Update(&problem)
 	if err != nil {
@@ -67,7 +84,7 @@ func (s *service) UpdateProblem(problemId uint, updatedProblem domain.NewProblem
 	return &problem, nil
 }
 
-func problemAppToProblem(newProblem domain.NewProblemApp) domain.Problem {
+func problemAdminAppToProblem(newProblem domain.ProblemAdminApp) domain.Problem {
 	return domain.Problem{
 		OmaforosPostId:   newProblem.OmaforosPostId,
 		DateUploaded:     time.Now(),
@@ -79,5 +96,19 @@ func problemAppToProblem(newProblem domain.NewProblemApp) domain.Problem {
 		IsDraft:          newProblem.IsDraft,
 		Hint:             newProblem.Hint,
 		OfficialSolution: newProblem.OfficialSolution,
+	}
+}
+
+func problemToProblemAdminApp(problem domain.Problem) domain.ProblemAdminApp {
+	return domain.ProblemAdminApp{
+		OmaforosPostId:   problem.OmaforosPostId,
+		ReleaseDate:      problem.DateContestStart,
+		Deadline:         problem.DateContestEnd,
+		Statement:        problem.Statement,
+		Answer:           problem.Answer,
+		Annotations:      problem.Annotations,
+		IsDraft:          problem.IsDraft,
+		Hint:             problem.Hint,
+		OfficialSolution: problem.OfficialSolution,
 	}
 }

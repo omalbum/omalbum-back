@@ -35,14 +35,17 @@ func NewAdminController(database *db.Database, manager permissions.Manager) Admi
 }
 
 func (a *adminController) GetProblem(context *gin.Context) {
-	//problemId := params.GetProblemID(context)
-
-	// TODO IMPLEMENTAR
-	panic("implement me")
+	problemId := params.GetProblemID(context)
+	problem, err := admin.NewService(a.database).GetProblem(problemId)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, problem)
 }
 
 func (a *adminController) PostProblem(context *gin.Context) {
-	var newProblem domain.NewProblemApp
+	var newProblem domain.ProblemAdminApp
 	_ = context.Bind(&newProblem)
 	userId := params.GetCallerID(context)
 	problem, err := admin.NewService(a.database).CreateProblem(userId, newProblem)
@@ -54,7 +57,7 @@ func (a *adminController) PostProblem(context *gin.Context) {
 }
 
 func (a *adminController) PutProblem(context *gin.Context) {
-	var updatedProblem domain.NewProblemApp
+	var updatedProblem domain.ProblemAdminApp
 	_ = context.Bind(&updatedProblem)
 	problemId := params.GetProblemID(context)
 	_, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)

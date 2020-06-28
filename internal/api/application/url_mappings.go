@@ -24,18 +24,22 @@ func MapURLs(app *Application, router *gin.Engine) {
 		// Register endpoints
 		v1.POST("/register", app.RegisterController.Register)
 
-		//Problems endpoints
-		//TODO
+		// Problems endpoints
+		v1.GET("/problems/next", app.ProblemsController.GetNextProblems)
+		v1.GET("/problems/current", app.ProblemsController.GetCurrentProblems)
+		v1.GET("/problems/problem/:problem_id", app.ProblemsController.GetProblem)
+		v1.GET("/problems/all", app.ProblemsController.GetAllProblems)
 
-		//Users endpoints
+		// Users endpoints
 		v1.GET("/users/:user_id/profile", app.AuthMiddleware.MiddlewareFunc(), app.UserController.GetUser)
 		v1.PUT("/users/:user_id/profile", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PutUser)
 		v1.PUT("/users/:user_id/password", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PutPassword)
-		//v1.POST("/users/password/reset", app.UserController.ResetPassword) //TODO este no va a estar funcional si no configuramos el envio de emails!
+		v1.POST("/users/password/reset", app.UserController.ResetPassword) //TODO este no va a estar funcional si no configuramos el envio de emails!
 		v1.GET("/users/:user_id/album", app.AuthMiddleware.MiddlewareFunc(), app.UserController.GetAlbum)
 		v1.POST("/users/answer", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PostAnswer)
 
-		//Admin endpoints
+		// Admin endpoints
+		v1.GET("/admin/problem/:problem_id", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.GetProblem)
 		v1.POST("/admin/problem", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.PostProblem)
 		v1.PUT("/admin/problem/:problem_id", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.PutProblem)
 		v1.DELETE("/admin/problem/:problem_id", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.DeleteProblem)

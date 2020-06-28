@@ -31,5 +31,7 @@ type UserActionRepo interface {
 
 type ProblemTagRepo interface {
 	Create(problemTag *ProblemTag) error
+	CreateByProblemIdAndTags(problemId uint, tags []string) error
+	DeleteAllTagsByProblemId(problemId uint) error
 	GetByProblemId(problemId uint) []ProblemTag
 }

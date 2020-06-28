@@ -13,6 +13,7 @@ import (
 )
 
 type AdminController interface {
+	GetProblem(context *gin.Context)
 	PostProblem(context *gin.Context)
 	PutProblem(context *gin.Context)
 	DeleteProblem(context *gin.Context)
@@ -31,6 +32,13 @@ func NewAdminController(database *db.Database, manager permissions.Manager) Admi
 		manager:  manager,
 		logger:   logger,
 	}
+}
+
+func (a *adminController) GetProblem(context *gin.Context) {
+	//problemId := params.GetProblemID(context)
+
+	// TODO IMPLEMENTAR
+	panic("implement me")
 }
 
 func (a *adminController) PostProblem(context *gin.Context) {

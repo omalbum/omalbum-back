@@ -41,8 +41,12 @@ func (s *service) CreateProblem(poserId uint, newProblem domain.NewProblemApp) (
 	problem := problemAppToProblem(newProblem)
 	problem.PoserId = poserId
 	err = problemRepo.Create(&problem)
-	// TODO falta guardar las tags
-	return &problem, err
+	if err != nil {
+		return nil, messages.NewBadRequest("error", "error")
+	}
+	problemTagRepo := crud.NewDatabaseProblemTagRepo(s.database)
+	problemTagRepo.CreateByProblemIdAndTags(problem.ID, newProblem.Tags)
+	return &problem, nil
 }
 
 func (s *service) UpdateProblem(problemId uint, updatedProblem domain.NewProblemApp) (*domain.Problem, error) {
@@ -54,8 +58,13 @@ func (s *service) UpdateProblem(problemId uint, updatedProblem domain.NewProblem
 	problem := problemAppToProblem(updatedProblem)
 	problem.ID = problemId
 	err = problemRepo.Update(&problem)
-	// todo UPDATE TAGS
-	return &problem, err
+	if err != nil {
+		return nil, messages.NewNotFound("problem_not_found", "problem not found")
+	}
+	problemTagRepo := crud.NewDatabaseProblemTagRepo(s.database)
+	problemTagRepo.DeleteAllTagsByProblemId(problemId)
+	problemTagRepo.CreateByProblemIdAndTags(problemId, updatedProblem.Tags)
+	return &problem, nil
 }
 
 func problemAppToProblem(newProblem domain.NewProblemApp) domain.Problem {

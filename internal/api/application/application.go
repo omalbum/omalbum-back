@@ -21,6 +21,7 @@ type Application struct {
 	RegisterController controllers.RegisterController
 	UserController     controllers.UserController
 	AdminController    controllers.AdminController
+	ProblemsController controllers.ProblemsController
 }
 
 func BuildApplication(db *db.Database) *Application {
@@ -39,12 +40,14 @@ func BuildApplication(db *db.Database) *Application {
 	registerController := controllers.NewRegisterController(db, mail)
 	userController := controllers.NewUserController(db, manager, mail)
 	adminController := controllers.NewAdminController(db, manager)
+	problemsController := controllers.NewProblemsController(db, manager)
 	return &Application{
 		AuthMiddleware:     authMiddleware,
 		AdminMiddleware:    adminMiddleware,
 		RegisterController: registerController,
 		UserController:     userController,
 		AdminController:    adminController,
+		ProblemsController: problemsController,
 	}
 }
 

@@ -34,7 +34,12 @@ func NewProblemsController(database *db.Database, manager permissions.Manager) P
 }
 
 func (p problemsController) GetNextProblems(context *gin.Context) {
-	panic("implement me") //TODO
+	ps, err := problems.NewService(p.database).GetNextProblems()
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, ps)
 }
 
 func (p problemsController) GetCurrentProblems(context *gin.Context) {

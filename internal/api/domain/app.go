@@ -126,3 +126,9 @@ type ProblemApp struct {
 	ReleaseDate    time.Time `json:"release_date"`
 	Deadline       time.Time `json:"deadline"`
 }
+
+type ProblemNextApp struct {
+	ProblemId   uint      `json:"problem_id"`
+	ReleaseDate time.Time `json:"release_date"`
+	Deadline    time.Time `json:"deadline"`
+}

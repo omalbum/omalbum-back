@@ -12,13 +12,6 @@ type databaseProblemRepo struct {
 	database *db.Database
 }
 
-func (dr *databaseProblemRepo) GetCurrentProblems() []domain.Problem {
-	t := time.Now()
-	var problems []domain.Problem
-	dr.database.DB.Where("(problems.date_contest_start < ?) AND (? < problems.date_contest_end) AND (NOT problems.is_draft)", t, t).Find(&problems)
-	return problems
-}
-
 func NewDatabaseProblemRepo(database *db.Database) domain.ProblemRepo {
 	return &databaseProblemRepo{
 		database: database,
@@ -56,4 +49,19 @@ func (dr *databaseProblemRepo) Delete(problemId uint) error {
 		return messages.New("problem_id_must_be_nonzero", "problem id must be nonzero")
 	}
 	return dr.database.DB.Where(&domain.Problem{Model: gorm.Model{ID: problemId}}).Delete(&domain.Problem{Model: gorm.Model{ID: problemId}}).Error
+}
+
+func (dr *databaseProblemRepo) GetNextProblems() []domain.Problem {
+	t := time.Now()
+	var problems []domain.Problem
+	dr.database.DB.Where("(? < problems.date_contest_start) AND (NOT problems.is_draft)", t).Find(&problems)
+	return problems
+
+}
+
+func (dr *databaseProblemRepo) GetCurrentProblems() []domain.Problem {
+	t := time.Now()
+	var problems []domain.Problem
+	dr.database.DB.Where("(problems.date_contest_start < ?) AND (? < problems.date_contest_end) AND (NOT problems.is_draft)", t, t).Find(&problems)
+	return problems
 }

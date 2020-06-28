@@ -18,9 +18,17 @@ type service struct {
 
 func (s *service) GetCurrentProblems() ([]domain.ProblemApp, error) {
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetCurrentProblems()
+	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
 	problems := make([]domain.ProblemApp, len(problemsDatabase))
+
 	for i, prob := range problemsDatabase {
 		problems[i] = problemToProblemApp(prob)
+		var problemTags = tagRepo.GetByProblemId(prob.ID)
+		var tags = make([]string, len(problemTags))
+		for j, problemTag := range problemTags {
+			tags[j] = problemTag.Tag
+		}
+		problems[i].Tags = tags
 	}
 	return problems, nil
 }
@@ -37,7 +45,6 @@ func (s *service) GetProblemById(problemId uint) (domain.ProblemApp, error) {
 		return domain.ProblemApp{}, messages.NewNotFound("problem_not_found", "problem not found")
 	}
 	problemApp := problemToProblemApp(*problem)
-	problemApp.ProblemId = problemId
 	problemTags := crud.NewDatabaseProblemTagRepo(s.database).GetByProblemId(problemId)
 	var tags = make([]string, len(problemTags))
 	for i, problemTag := range problemTags {
@@ -49,6 +56,7 @@ func (s *service) GetProblemById(problemId uint) (domain.ProblemApp, error) {
 
 func problemToProblemApp(problem domain.Problem) domain.ProblemApp {
 	return domain.ProblemApp{
+		ProblemId:      problem.ID,
 		OmaforosPostId: problem.OmaforosPostId,
 		ReleaseDate:    problem.DateContestStart,
 		Deadline:       problem.DateContestEnd,

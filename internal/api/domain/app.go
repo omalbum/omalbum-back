@@ -104,6 +104,18 @@ type AlbumApp struct {
 	Album []ProblemStatsApp `json:"album"`
 }
 
+type NextProblemsApp struct {
+	NextProblems []ProblemNextApp `json:"next_problems"`
+}
+
+type CurrentProblemsApp struct {
+	CurrentProblems []ProblemApp `json:"current_problems"`
+}
+
+type AllProblemsApp struct {
+	Problems []ProblemApp `json:"all_problems"`
+}
+
 type ProblemAdminApp struct {
 	ProblemId        uint      `json:"problem_id"`
 	Statement        string    `json:"statement"`

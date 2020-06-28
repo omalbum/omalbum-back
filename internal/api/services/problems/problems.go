@@ -9,16 +9,16 @@ import (
 
 type Service interface {
 	GetProblemById(problemId uint) (domain.ProblemApp, error)
-	GetCurrentProblems() ([]domain.ProblemApp, error)
-	GetNextProblems() ([]domain.ProblemNextApp, error)
-	GetAllProblems() ([]domain.ProblemApp, error)
+	GetCurrentProblems() (domain.CurrentProblemsApp, error)
+	GetNextProblems() (domain.NextProblemsApp, error)
+	GetAllProblems() (domain.AllProblemsApp, error)
 }
 
 type service struct {
 	database *db.Database
 }
 
-func (s *service) GetAllProblems() ([]domain.ProblemApp, error) {
+func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
 	//TODO Optimizacion: traer roles con un inner join para hacer menos queries a la DB
 	// eso es lo costoso de esta funcion.
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
@@ -34,20 +34,20 @@ func (s *service) GetAllProblems() ([]domain.ProblemApp, error) {
 		}
 		problems[i].Tags = tags
 	}
-	return problems, nil
+	return domain.AllProblemsApp{Problems: problems}, nil
 }
 
-func (s *service) GetNextProblems() ([]domain.ProblemNextApp, error) {
+func (s *service) GetNextProblems() (domain.NextProblemsApp, error) {
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetNextProblems()
 	problems := make([]domain.ProblemNextApp, len(problemsDatabase))
 
 	for i, prob := range problemsDatabase {
 		problems[i] = problemToProblemNextApp(prob)
 	}
-	return problems, nil
+	return domain.NextProblemsApp{NextProblems: problems}, nil
 }
 
-func (s *service) GetCurrentProblems() ([]domain.ProblemApp, error) {
+func (s *service) GetCurrentProblems() (domain.CurrentProblemsApp, error) {
 	//TODO Optimizacion: traer roles con un inner join para hacer menos queries a la DB
 	// eso es lo costoso de esta funcion.
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetCurrentProblems()
@@ -63,7 +63,7 @@ func (s *service) GetCurrentProblems() ([]domain.ProblemApp, error) {
 		}
 		problems[i].Tags = tags
 	}
-	return problems, nil
+	return domain.CurrentProblemsApp{CurrentProblems: problems}, nil
 }
 
 func NewService(database *db.Database) Service {

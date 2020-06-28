@@ -11,10 +11,30 @@ type Service interface {
 	GetProblemById(problemId uint) (domain.ProblemApp, error)
 	GetCurrentProblems() ([]domain.ProblemApp, error)
 	GetNextProblems() ([]domain.ProblemNextApp, error)
+	GetAllProblems() ([]domain.ProblemApp, error)
 }
 
 type service struct {
 	database *db.Database
+}
+
+func (s *service) GetAllProblems() ([]domain.ProblemApp, error) {
+	//TODO Optimizacion: traer roles con un inner join para hacer menos queries a la DB
+	// eso es lo costoso de esta funcion.
+	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
+	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
+	problems := make([]domain.ProblemApp, len(problemsDatabase))
+
+	for i, prob := range problemsDatabase {
+		problems[i] = problemToProblemApp(prob)
+		var problemTags = tagRepo.GetByProblemId(prob.ID)
+		var tags = make([]string, len(problemTags))
+		for j, problemTag := range problemTags {
+			tags[j] = problemTag.Tag
+		}
+		problems[i].Tags = tags
+	}
+	return problems, nil
 }
 
 func (s *service) GetNextProblems() ([]domain.ProblemNextApp, error) {

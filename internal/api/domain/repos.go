@@ -17,8 +17,9 @@ type ProblemRepo interface {
 	Create(problem *Problem) error
 	Update(problem *Problem) error // updates a specific row, problem must have ID setted
 	Delete(problemId uint) error   // deletes a problem by Id
-	GetCurrentProblems() []Problem
-	GetNextProblems() []Problem
+	GetCurrentProblems() []Problem // devuelve los problemas que se pueden ver y cuyo deadline es futuro (sin drafts)
+	GetNextProblems() []Problem    // devuelve los problemas que todavia no se pueden ver (sin drafts)
+	GetAllProblems() []Problem     // devuelve los problemas que ya se pueden ver (sin  drafts)
 }
 
 type UserProblemAttempsRepo interface {

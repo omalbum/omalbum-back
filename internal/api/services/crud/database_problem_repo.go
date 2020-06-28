@@ -65,3 +65,10 @@ func (dr *databaseProblemRepo) GetCurrentProblems() []domain.Problem {
 	dr.database.DB.Where("(problems.date_contest_start < ?) AND (? < problems.date_contest_end) AND (NOT problems.is_draft)", t, t).Find(&problems)
 	return problems
 }
+
+func (dr *databaseProblemRepo) GetAllProblems() []domain.Problem {
+	t := time.Now()
+	var problems []domain.Problem
+	dr.database.DB.Where("(problems.date_contest_start < ? ) AND  (NOT problems.is_draft)", t).Find(&problems)
+	return problems
+}

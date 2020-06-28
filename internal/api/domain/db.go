@@ -52,6 +52,7 @@ type Problem struct {
 	Annotations      string
 	IsDraft          bool
 	Hint             string
+	OfficialSolution string
 }
 
 type UserProblemAttempt struct {

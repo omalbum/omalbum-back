@@ -103,3 +103,16 @@ type ProblemStatsApp struct {
 type AlbumApp struct {
 	Album []ProblemStatsApp `json:"album"`
 }
+
+type NewProblemApp struct {
+	Statement        string    `json:"statement"`
+	Answer           int       `json:"answer"`
+	OmaforosPostId   uint      `json:"omaforos_post_id"`
+	Annotations      string    `json:"annotations"`
+	Hint             string    `json:"hint"`
+	Tags             []string  `json:"tags"`
+	OfficialSolution string    `json:"official_solution"`
+	ReleaseDate      time.Time `json:"release_date"`
+	Deadline         time.Time `json:"deadline"`
+	IsDraft          bool      `json:"is_draft"`
+}

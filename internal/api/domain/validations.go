@@ -30,3 +30,10 @@ func (registration RegistrationApp) ValidateWithoutPassword() error {
 		validation.Field(&registration.Email, validation.Required, is.Email),
 	)
 }
+
+func (newProblem NewProblemApp) Validate() error {
+	//  TODO completar de acuerdo a docu API
+	return validation.ValidateStruct(&newProblem,
+		validation.Field(&newProblem.Statement, validation.Required),
+	)
+}

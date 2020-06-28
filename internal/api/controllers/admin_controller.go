@@ -3,7 +3,9 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/admin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
@@ -32,19 +34,34 @@ func NewAdminController(database *db.Database, manager permissions.Manager) Admi
 }
 
 func (a *adminController) PostProblem(context *gin.Context) {
-	panic("implement me")
+	var newProblem domain.NewProblemApp
+	_ = context.Bind(&newProblem)
+	userId := params.GetCallerID(context)
+	problem, err := admin.NewService(a.database).CreateProblem(userId, newProblem)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{"problem_id": problem.ID})
 }
 
 func (a *adminController) PutProblem(context *gin.Context) {
-	panic("implement me")
+	var updatedProblem domain.NewProblemApp
+	_ = context.Bind(&updatedProblem)
+	problemId := params.GetProblemID(context)
+	_, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{})
 }
 
 func (a *adminController) DeleteProblem(context *gin.Context) {
 	problemId := params.GetProblemID(context)
-	var err = crud.NewDatabaseProblemRepo(a.database).Delete(problemId)
+	err := admin.NewService(a.database).DeleteProblem(problemId)
 	if err != nil {
-		context.JSON(http.StatusNotFound, messages.NewValidation(err))
-		return
+		context.JSON(messages.GetHttpCode(err), err)
 	}
 	context.JSON(http.StatusOK, gin.H{})
 }

@@ -5,10 +5,18 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+	"time"
 )
 
 type databaseProblemRepo struct {
 	database *db.Database
+}
+
+func (dr *databaseProblemRepo) GetCurrentProblems() []domain.Problem {
+	t := time.Now()
+	var problems []domain.Problem
+	dr.database.DB.Where("(problems.date_contest_start < ?) AND (? < problems.date_contest_end) AND (NOT problems.is_draft)", t, t).Find(&problems)
+	return problems
 }
 
 func NewDatabaseProblemRepo(database *db.Database) domain.ProblemRepo {

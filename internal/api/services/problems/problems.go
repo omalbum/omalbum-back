@@ -9,10 +9,20 @@ import (
 
 type Service interface {
 	GetProblemById(problemId uint) (domain.ProblemApp, error)
+	GetCurrentProblems() ([]domain.ProblemApp, error)
 }
 
 type service struct {
 	database *db.Database
+}
+
+func (s *service) GetCurrentProblems() ([]domain.ProblemApp, error) {
+	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetCurrentProblems()
+	problems := make([]domain.ProblemApp, len(problemsDatabase))
+	for i, prob := range problemsDatabase {
+		problems[i] = problemToProblemApp(prob)
+	}
+	return problems, nil
 }
 
 func NewService(database *db.Database) Service {

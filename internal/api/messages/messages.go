@@ -42,6 +42,9 @@ func NewConflict(code string, message string) error {
 func NewNotFound(code string, message string) error {
 	return newWithHttpStatus(code, message, http.StatusNotFound)
 }
+func NewForbidden(code string, message string) error {
+	return newWithHttpStatus(code, message, http.StatusForbidden)
+}
 
 // Returns the httpCode
 func GetHttpCode(err error) int {

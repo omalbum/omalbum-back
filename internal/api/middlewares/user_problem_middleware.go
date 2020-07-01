@@ -7,7 +7,6 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
 	"net/http"
-	"time"
 )
 
 type UserProblemMiddleware interface {
@@ -28,11 +27,10 @@ func NewUserProblemMiddleware(database *db.Database, manager permissions.Manager
 
 func (a *userProblemMiddleware) ViewAuthCheck(c *gin.Context) {
 
-	now := time.Now()
 	problemId := params.GetProblemID(c)
 	problem := crud.NewDatabaseProblemRepo(a.database).GetById(problemId)
 
-	if problem.IsDraft || now.Before(problem.DateContestStart) {
+	if !problem.IsViewable() {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
 		return
 	}

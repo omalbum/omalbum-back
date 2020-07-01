@@ -21,11 +21,50 @@ type Service interface {
 	UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error)
 	ChangePassword(userID uint, newPassword string) error
 	ResetPassword(email string) error
+	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
 }
 
 type service struct {
 	database *db.Database
 	mailer   mailer.Mailer
+}
+
+func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (*domain.AttemptResultApp, error) {
+	problem := crud.NewDatabaseProblemRepo(s.database).GetById(attemptApp.ProblemId)
+	if problem == nil {
+		return nil, messages.NewNotFound("inexistent_problem", "inexistent problem")
+	}
+	if !problem.IsViewable() {
+		return nil, messages.NewForbidden("problem_is_not_viewable", "problem is not viewable")
+	}
+	attempt := domain.UserProblemAttempt{
+		UserId:     userID,
+		ProblemId:  attemptApp.ProblemId,
+		Date:       time.Now(),
+		UserAnswer: attemptApp.Answer,
+	}
+	repo := crud.NewDatabaseUserProblemAttemptRepo(s.database)
+	var err error
+	isContest := problem.IsContestProblem()
+	if isContest && len(repo.GetByProblemId(problem.ID)) > 0 {
+		return nil, messages.NewForbidden("problem_already_attempted_during_contest", "problem already attempted during contest")
+	}
+	err = repo.Create(&attempt)
+	if err != nil {
+		return nil, messages.NewBadRequest("error", "error") // esto puede ocurrir?
+	}
+	res := domain.AttemptResultApp{AttemptId: attempt.ID}
+	res.Deadline = problem.DateContestEnd
+	if isContest {
+		res.Result = "wait"
+		return &res, nil
+	}
+	if attempt.UserAnswer == problem.Answer {
+		res.Result = "correct"
+	} else {
+		res.Result = "incorrect"
+	}
+	return &res, nil
 }
 
 func NewService(database *db.Database, mailer mailer.Mailer) Service {

@@ -36,6 +36,6 @@ docker run -it --rm --network host --name teleoma teleoma
 ### MySQL
 
 ```sh
-docker run -it --rm --name mysql-teleoma -p 3306:3306 -v db-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=teleoma -e MYSQL_PASSWORD=teleoma -e MYSQL_USER=teleoma -e MYSQL_DATABASE=teleoma mysql:8.0.19
+docker run -it --rm --name mysql-teleoma -p 3306:3306 -v db-data:/var/lib/mysql-teleoma -e MYSQL_ROOT_PASSWORD=teleoma -e MYSQL_PASSWORD=teleoma -e MYSQL_USER=teleoma -e MYSQL_DATABASE=teleoma mysql:8.0.19
 ```
  

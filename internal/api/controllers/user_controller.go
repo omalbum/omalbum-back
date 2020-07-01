@@ -117,5 +117,13 @@ func (u *userController) GetAlbum(context *gin.Context) {
 }
 
 func (u *userController) PostAnswer(context *gin.Context) {
-	panic("implement me") //TODO
+	userID := params.GetCallerID(context)
+	var problemAttemptApp domain.ProblemAttemptApp
+	_ = context.Bind(&problemAttemptApp)
+	result, err := users.NewService(u.database, u.mailer).PostAnswer(userID, problemAttemptApp)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, *result)
 }

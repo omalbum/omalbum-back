@@ -22,8 +22,9 @@ type ProblemRepo interface {
 	GetAllProblems() []Problem     // devuelve los problemas que ya se pueden ver (sin  drafts)
 }
 
-type UserProblemAttempsRepo interface {
+type UserProblemAttemptRepo interface {
 	Create(userProblemAttempt *UserProblemAttempt) error
+	GetByProblemId(problemId uint) []UserProblemAttempt
 }
 
 type UserActionRepo interface {

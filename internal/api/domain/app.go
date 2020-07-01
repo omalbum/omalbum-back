@@ -144,3 +144,13 @@ type ProblemNextApp struct {
 	ReleaseDate time.Time `json:"release_date"`
 	Deadline    time.Time `json:"deadline"`
 }
+
+type ProblemAttemptApp struct {
+	ProblemId uint `json:"problem_id"`
+	Answer    int  `json:"answer"`
+}
+type AttemptResultApp struct {
+	AttemptId uint      `json:"attempt_id"`
+	Result    string    `json:"result"`
+	Deadline  time.Time `json:"deadline"`
+}

@@ -6,6 +6,7 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/application"
 	"github.com/miguelsotocarlos/teleoma/internal/api/config"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
 	"log"
 	"net/http"
@@ -24,7 +25,7 @@ func main() {
 	}
 
 	defer check.Check(database.Close)
-
+	crud.RefreshViews(database)
 	// For jobs
 	jobrunner.Start()
 

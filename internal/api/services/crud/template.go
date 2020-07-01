@@ -81,3 +81,27 @@ func CreateSampleData(database *db.Database) {
 	// data de prueba para testear
 
 }
+
+
+func RefreshViews(db *db.Database) {
+	db.DB.Exec("DROP VIEW IF EXISTS expanded_user_problem_attempts")
+	createExpandedUserProblemAttempts := `
+	CREATE VIEW expanded_user_problem_attempts AS
+		SELECT
+			problems.answer as answer,
+			problems.date_contest_end as date_contest_end,
+			problems.date_contest_start as date_contest_start,
+			user_problem_attempts.user_id as user_id,
+			user_problem_attempts.date as attempt_date,
+			user_problem_attempts.problem_id as problem_id,
+			user_problem_attempts.user_answer as user_answer,
+			problems.answer = user_problem_attempts.user_answer as is_correct,
+			(user_problem_attempts.date <  problems.date_contest_end) and (user_problem_attempts.date >  problems.date_contest_start)   as during_contest
+		FROM
+			problems
+		INNER JOIN
+			user_problem_attempts
+		ON
+			problems.id = user_problem_attempts.problem_id `
+	db.DB.Exec(createExpandedUserProblemAttempts)
+}

@@ -68,3 +68,15 @@ type ProblemTag struct {
 	ProblemId uint
 	Tag       string
 }
+
+type ExpandedUserProblemAttempt struct{
+	Answer int
+	DateContestEnd time.Time
+	DateContestStart time.Time
+	UserId uint
+	AttemptDate time.Time
+	ProblemId uint
+	UserAnswer int
+	IsCorrect bool
+	DuringContest bool
+}

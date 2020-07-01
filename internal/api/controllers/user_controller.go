@@ -113,7 +113,17 @@ func (u *userController) ResetPassword(context *gin.Context) {
 }
 
 func (u *userController) GetAlbum(context *gin.Context) {
-	panic("implement me") //TODO
+	userID := params.GetUserID(context)
+	if !u.manager.IsAdminOrSameUser(context, userID) { //todo esto podria ser un middleware
+		context.JSON(http.StatusForbidden, gin.H{})
+		return
+	}
+	album, err := users.NewService(u.database, u.mailer).GetAlbum(userID)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, *album)
 }
 
 func (u *userController) PostAnswer(context *gin.Context) {

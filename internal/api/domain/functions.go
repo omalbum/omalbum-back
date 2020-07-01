@@ -17,3 +17,11 @@ func (problem *Problem) IsContestProblem() bool {
 	}
 	return true
 }
+
+func (problem *Problem) IsContestFinished() bool {
+	now := time.Now()
+	if problem.IsDraft || now.Before(problem.DateContestEnd) {
+		return false
+	}
+	return true
+}

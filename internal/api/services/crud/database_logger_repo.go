@@ -10,10 +10,10 @@ import (
 	To log user's actions
 */
 type Logger interface {
-	LogUserAction(userID uint, description string, statusCode uint, method string, resource string) error
-	LogUserActionAtTime(userID uint, actionTime time.Time, description string, statusCode uint, method string, resource string) error
-	LogAnonymousAction(description string, statusCode uint, method string, resource string) error
-	LogAnonymousActionAtTime(actionTime time.Time, description string, statusCode uint, method string, resource string) error
+	LogUserAction(userID uint, description string, statusCode int, method string, resource string) error
+	LogUserActionAtTime(userID uint, actionTime time.Time, description string, statusCode int, method string, resource string) error
+	LogAnonymousAction(description string, statusCode int, method string, resource string) error
+	LogAnonymousActionAtTime(actionTime time.Time, description string, statusCode int, method string, resource string) error
 }
 
 // Implementation
@@ -28,7 +28,7 @@ func NewLogger(database *db.Database) Logger {
 	}
 }
 
-func (l *logger) LogUserActionAtTime(userID uint, actionTime time.Time, description string, statusCode uint, method string, resource string) error {
+func (l *logger) LogUserActionAtTime(userID uint, actionTime time.Time, description string, statusCode int, method string, resource string) error {
 	return l.userActionRepo.Create(&domain.UserAction{
 		UserId:      userID,
 		Date:        actionTime,
@@ -39,14 +39,14 @@ func (l *logger) LogUserActionAtTime(userID uint, actionTime time.Time, descript
 	})
 }
 
-func (l *logger) LogAnonymousActionAtTime(actionTime time.Time, description string, statusCode uint, method string, resource string) error {
+func (l *logger) LogAnonymousActionAtTime(actionTime time.Time, description string, statusCode int, method string, resource string) error {
 	return l.LogUserActionAtTime(domain.AnonymousUser, actionTime, description, statusCode, method, resource)
 }
 
-func (l *logger) LogUserAction(userID uint, description string, statusCode uint, method string, resource string) error {
+func (l *logger) LogUserAction(userID uint, description string, statusCode int, method string, resource string) error {
 	return l.LogUserActionAtTime(userID, time.Now(), description, statusCode, method, resource)
 }
 
-func (l *logger) LogAnonymousAction(description string, statusCode uint, method string, resource string) error {
+func (l *logger) LogAnonymousAction(description string, statusCode int, method string, resource string) error {
 	return l.LogAnonymousActionAtTime(time.Now(), description, statusCode, method, resource)
 }

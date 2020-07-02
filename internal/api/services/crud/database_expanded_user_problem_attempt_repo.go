@@ -9,7 +9,6 @@ type databaseExpandedUserProblemAttemptRepo struct {
 	database *db.Database
 }
 
-
 func (d databaseExpandedUserProblemAttemptRepo) GetByUserId(userId uint) []domain.ExpandedUserProblemAttempt {
 	if userId == 0 {
 		return nil //needed to avoid an empty condition in Where

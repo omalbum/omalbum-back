@@ -10,6 +10,12 @@ type databaseProblemTagRepo struct {
 	database *db.Database
 }
 
+func (d databaseProblemTagRepo) GetAllTags() []domain.ProblemTag {
+	var tags []domain.ProblemTag
+	d.database.DB.Find(&tags)
+	return tags
+}
+
 func (d databaseProblemTagRepo) Create(problemTag *domain.ProblemTag) error {
 	return d.database.DB.Create(problemTag).Error
 

@@ -34,7 +34,7 @@ type UserAction struct {
 	gorm.Model
 	UserId      uint
 	Date        time.Time
-	StatusCode  uint
+	StatusCode  int
 	Method      string
 	Resource    string
 	Description string
@@ -69,14 +69,14 @@ type ProblemTag struct {
 	Tag       string
 }
 
-type ExpandedUserProblemAttempt struct{
-	Answer int
-	DateContestEnd time.Time
+type ExpandedUserProblemAttempt struct {
+	Answer           int
+	DateContestEnd   time.Time
 	DateContestStart time.Time
-	UserId uint
-	AttemptDate time.Time
-	ProblemId uint
-	UserAnswer int
-	IsCorrect bool
-	DuringContest bool
+	UserId           uint
+	AttemptDate      time.Time
+	ProblemId        uint
+	UserAnswer       int
+	IsCorrect        bool
+	DuringContest    bool
 }

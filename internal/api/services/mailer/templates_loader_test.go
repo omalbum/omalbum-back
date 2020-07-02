@@ -12,7 +12,7 @@ func TestLoadTemplateOk(t *testing.T) {
 
 	templateLoader := NewTemplateLoader(fs)
 
-	assert.Equal(t, "Hola {{name}} DriverMailContentSample", templateLoader.load(DriverTemplate))
+	assert.Equal(t, "Hola {{name}} tu nueva password es {{password}}", templateLoader.load(ChangePasswordTemplate))
 }
 
 func TestLoadTemplateNotOk(t *testing.T) {

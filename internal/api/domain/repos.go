@@ -39,8 +39,9 @@ type ProblemTagRepo interface {
 	CreateByProblemIdAndTags(problemId uint, tags []string) error
 	DeleteAllTagsByProblemId(problemId uint) error
 	GetByProblemId(problemId uint) []ProblemTag
+	GetAllTags() []ProblemTag
 }
 
-type ExpandedUserProblemAttemptRepo interface{
+type ExpandedUserProblemAttemptRepo interface {
 	GetByUserId(userrId uint) []ExpandedUserProblemAttempt
 }

@@ -7,57 +7,6 @@ import (
 	"testing"
 )
 
-func TestSendSuccessfulRegistrationDriverAndCook(t *testing.T) {
-	sendGridRestClientMock := sendgrid.NewRestClientMock()
-
-	fs := afero.NewMemMapFs()
-	createSampleFiles(fs)
-
-	mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
-
-	mailer.SendSuccessfulRegistration("algo@nada.com", "pepe")
-
-	res := sendGridRestClientMock.(*sendgrid.RestClientMock)
-	assert.Equal(t, Subject, res.Subject)
-	assert.Equal(t, From, res.From)
-	assert.Equal(t, "algo@nada.com", res.To)
-	assert.Equal(t, "Hola pepeDriverAndCookMailContentSample", res.Content)
-}
-
-func TestSendSuccessfulRegistrationDriver(t *testing.T) {
-	sendGridRestClientMock := sendgrid.NewRestClientMock()
-
-	fs := afero.NewMemMapFs()
-	createSampleFiles(fs)
-
-	mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
-
-	mailer.SendSuccessfulRegistration("algo@nada.com", "pepe")
-
-	res := sendGridRestClientMock.(*sendgrid.RestClientMock)
-	assert.Equal(t, Subject, res.Subject)
-	assert.Equal(t, From, res.From)
-	assert.Equal(t, "algo@nada.com", res.To)
-	assert.Equal(t, "Hola pepe DriverMailContentSample", res.Content)
-}
-
-func TestSendSuccessfulRegistrationCook(t *testing.T) {
-	sendGridRestClientMock := sendgrid.NewRestClientMock()
-
-	fs := afero.NewMemMapFs()
-	createSampleFiles(fs)
-
-	mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
-
-	mailer.SendSuccessfulRegistration("algo@nada.com", "pepe")
-
-	res := sendGridRestClientMock.(*sendgrid.RestClientMock)
-	assert.Equal(t, Subject, res.Subject)
-	assert.Equal(t, From, res.From)
-	assert.Equal(t, "algo@nada.com", res.To)
-	assert.Equal(t, "Hola pepe CookMailContentSample", res.Content)
-}
-
 func TestSendPasswordChange(t *testing.T) {
 	sendGridRestClientMock := sendgrid.NewRestClientMock()
 

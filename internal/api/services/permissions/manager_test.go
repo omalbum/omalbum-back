@@ -32,6 +32,7 @@ func createDBWithAdmin() (*db.Database, func() error) {
 		UserName:       "gorra",
 		HashedPassword: crypto.HashAndSalt("gorra"),
 		Email:          "gorra15@gmail.com",
+		IsAdmin:        true,
 	}
 	_ = userRepo.Create(&userAdmin)
 

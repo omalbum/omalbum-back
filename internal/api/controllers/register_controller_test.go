@@ -41,8 +41,8 @@ func TestCanCreateUser(t *testing.T) {
     "password": "password123",
     "name": "Carlos",
     "last_name": "Desseno",
-    "cellphone": "1233333",
-    "email": "cdesseno@gmail.com",
+	"birthdate": "1992-03-14T00:00:00-00:00",
+    "email": "cdesseno@gmail.com"
 }
 `
 	c.Request, _ = http.NewRequest("POST", "", bytes.NewBufferString(request))
@@ -62,8 +62,8 @@ func TestCannotCreateUserBecauseThereIsAnotherOneWithTheSameUserName(t *testing.
     "password": "password123",
     "name": "Carlos",
     "last_name": "Desseno",
-    "cellphone": "1233333",
-    "email": "cdesseno@gmail.com",
+	"birthdate": "1992-03-14T00:00:00-00:00",
+    "email": "cdesseno@gmail.com"
 }
 `
 	c.Request, _ = http.NewRequest("POST", "", bytes.NewBufferString(request))

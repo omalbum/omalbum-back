@@ -98,7 +98,7 @@ type ProblemStatsApp struct {
 	Solved              bool      `json:"solved"`
 	SolvedDuringContest bool      `json:"solved_during_contest"`
 	DateSolved          time.Time `json:"date_solved"`
-	Tags                []string
+	Tags                []string  `json:"tags"`
 }
 type AlbumApp struct {
 	Album []ProblemStatsApp `json:"album"`

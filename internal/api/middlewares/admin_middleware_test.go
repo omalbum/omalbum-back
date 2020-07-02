@@ -26,26 +26,11 @@ func createDBForGroupsTesting() (*db.Database, func() error) {
 	_ = userRepo.Create(&domain.User{
 		UserName: "admin",
 		Email:    "a@b.com",
+		IsAdmin:  true,
 	})
 	_ = userRepo.Create(&domain.User{
 		UserName: "cook",
 		Email:    "c@b.com",
-	})
-
-	userRoleRepo := crud.NewDatabaseUserRoleRepo(database)
-	_ = userRoleRepo.Create(&domain.UserRole{
-		UserId: 1,
-		Role:   domain.AdminRole,
-	})
-	_ = userRoleRepo.Create(&domain.UserRole{
-		UserId: 2,
-		Role:   domain.CookRole,
-	})
-
-	groupRepo := crud.NewDatabaseGroupRepo(database)
-	_ = groupRepo.Create(&domain.Group{
-		Name:   "Test group",
-		Status: domain.ActiveGroup,
 	})
 
 	return database, database.Close

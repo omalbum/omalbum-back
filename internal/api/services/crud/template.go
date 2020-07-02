@@ -83,7 +83,6 @@ func CreateSampleData(database *db.Database) {
 
 }
 
-
 func RefreshViews(db *db.Database) {
 	db.DB.Exec("DROP VIEW IF EXISTS expanded_user_problem_attempts")
 	createExpandedUserProblemAttempts := `

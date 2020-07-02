@@ -5,6 +5,7 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 	"testing"
 )
 
@@ -34,18 +35,19 @@ func TestLogger(t *testing.T) {
 
 	newLogger := NewLogger(database)
 
-	newLogger.LogAnonymousAction("tried to register", "{blabla1}")
+	newLogger.LogAnonymousAction("tried to register", http.StatusBadRequest, "GET", "/register")
 
-	newLogger.LogUserAction(ivan.ID, "hizo una acción de prueba", "{blabla}")
+	newLogger.LogUserAction(ivan.ID, "hizo una acción de prueba", http.StatusForbidden, "POST", "/answer")
 
 	userActions := userActionRepo.GetActionsByUserID(ivan.ID)
 	assert.Equal(t, 1, len(userActions))
 	userAction := userActions[0]
-	assert.Equal(t, "hizo una acción de prueba", userAction.Action)
-	assert.Equal(t, "{blabla}", userAction.ExtraData)
+	assert.Equal(t, "hizo una acción de prueba", userAction.Description)
+	assert.Equal(t, "/answer", userAction.Resource)
 
 	userActions = userActionRepo.GetActionsByUserID(domain.AnonymousUser)
 	userAction = userActions[0]
-	assert.Equal(t, "tried to register", userAction.Action)
-	assert.Equal(t, "{blabla1}", userAction.ExtraData)
+	assert.Equal(t, "tried to register", userAction.Description)
+	assert.Equal(t, "/register", userAction.Resource)
+	assert.Equal(t, http.StatusBadRequest, userAction.StatusCode)
 }

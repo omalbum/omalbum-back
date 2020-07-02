@@ -51,6 +51,7 @@ func CreateAdminUser(db *db.Database) {
 		Email:            "admin@gmail.com",
 		RegistrationDate: time.Now(),
 		LastActiveDate:   time.Now(),
+		BirthDate:        time.Now(),
 		IsAdmin:          true,
 	}
 	_ = userRepo.Create(&userAdmin)

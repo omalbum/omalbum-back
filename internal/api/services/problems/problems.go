@@ -19,20 +19,24 @@ type service struct {
 }
 
 func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
-	//TODO Optimizacion: traer roles con un inner join para hacer menos queries a la DB
-	// eso es lo costoso de esta funcion.
+	//TODO Optimizacion: traer solamente las tags necesarias con un inner join
+	// a futuro, meter cache
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
 	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
 	problems := make([]domain.ProblemApp, len(problemsDatabase))
-
+	position := make(map[uint]int)
+	for i, p := range problemsDatabase {
+		position[p.ID] = i
+	}
 	for i, prob := range problemsDatabase {
 		problems[i] = problemToProblemApp(prob)
-		var problemTags = tagRepo.GetByProblemId(prob.ID)
-		var tags = make([]string, len(problemTags))
-		for j, problemTag := range problemTags {
-			tags[j] = problemTag.Tag
+	}
+	var problemTags = tagRepo.GetAllTags()
+	for _, tag := range problemTags {
+		problemId := tag.ProblemId
+		if i, ok := position[problemId]; ok {
+			problems[i].Tags = append(problems[i].Tags, tag.Tag)
 		}
-		problems[i].Tags = tags
 	}
 	return domain.AllProblemsApp{Problems: problems}, nil
 }

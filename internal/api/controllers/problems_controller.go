@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/cache"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/problems"
@@ -22,19 +23,21 @@ type problemsController struct {
 	database *db.Database
 	manager  permissions.Manager
 	logger   crud.Logger
+	cache    cache.TeleOMACache
 }
 
-func NewProblemsController(database *db.Database, manager permissions.Manager) ProblemsController {
+func NewProblemsController(database *db.Database, manager permissions.Manager, cache cache.TeleOMACache) ProblemsController {
 	logger := crud.NewLogger(database)
 	return &problemsController{
 		database: database,
 		manager:  manager,
 		logger:   logger,
+		cache:    cache,
 	}
 }
 
 func (p problemsController) GetNextProblems(context *gin.Context) {
-	ps, err := problems.NewService(p.database).GetNextProblems()
+	ps, err := problems.NewService(p.database, p.cache).GetNextProblems()
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return
@@ -43,7 +46,7 @@ func (p problemsController) GetNextProblems(context *gin.Context) {
 }
 
 func (p problemsController) GetCurrentProblems(context *gin.Context) {
-	ps, err := problems.NewService(p.database).GetCurrentProblems()
+	ps, err := problems.NewService(p.database, p.cache).GetCurrentProblems()
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return
@@ -54,7 +57,7 @@ func (p problemsController) GetCurrentProblems(context *gin.Context) {
 
 func (p problemsController) GetProblem(context *gin.Context) {
 	problemId := params.GetProblemID(context)
-	problem, err := problems.NewService(p.database).GetProblemById(problemId)
+	problem, err := problems.NewService(p.database, p.cache).GetProblemById(problemId)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return
@@ -63,7 +66,7 @@ func (p problemsController) GetProblem(context *gin.Context) {
 }
 
 func (p problemsController) GetAllProblems(context *gin.Context) {
-	ps, err := problems.NewService(p.database).GetAllProblems()
+	ps, err := problems.NewService(p.database, p.cache).GetAllProblems()
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return

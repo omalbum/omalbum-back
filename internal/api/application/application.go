@@ -9,6 +9,7 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/controllers"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/middlewares"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/cache"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/spf13/afero"
@@ -35,6 +36,7 @@ func BuildApplication(db *db.Database) *Application {
 		sendGridRestClient = sendgrid.NewRestClientMock()
 	}
 	mail := mailer.New(sendGridRestClient, mailer.NewTemplateLoader(afero.NewOsFs()))
+	teleOMACache := cache.NewTeleOMACache()
 
 	authMiddleware := middlewares.NewAuthMiddleware(db)
 	adminMiddleware := middlewares.NewAdminMiddleware(db, manager)
@@ -42,7 +44,7 @@ func BuildApplication(db *db.Database) *Application {
 	registerController := controllers.NewRegisterController(db, mail)
 	userController := controllers.NewUserController(db, manager, mail)
 	adminController := controllers.NewAdminController(db, manager)
-	problemsController := controllers.NewProblemsController(db, manager)
+	problemsController := controllers.NewProblemsController(db, manager, teleOMACache)
 	return &Application{
 		AuthMiddleware:        authMiddleware,
 		AdminMiddleware:       adminMiddleware,

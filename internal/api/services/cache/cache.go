@@ -6,18 +6,7 @@ import (
 	"time"
 )
 
-type TeleOMACache interface {
-	Get(key domain.CacheKey) interface{}
-	SetWithTTL(key domain.CacheKey, value interface{}, timeToLive time.Duration)
-	SetWithExpiration(key domain.CacheKey, value interface{}, expirationDate time.Time)
-	Delete(key domain.CacheKey)
-	Clear() int // clears everything
-
-	GetUserAlbum(userId uint) interface{}
-	ClearUserCache(userId uint) int //clears the user's cache
-}
-
-func NewTeleOMACache() TeleOMACache {
+func NewTeleOMACache() domain.TeleOMACache {
 	return teleOMACache{cache: ccache.New(ccache.Configure())}
 }
 

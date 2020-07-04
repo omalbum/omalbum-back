@@ -4,7 +4,6 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/cache"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"time"
 )
@@ -18,7 +17,7 @@ type Service interface {
 
 type service struct {
 	database *db.Database
-	cache    cache.TeleOMACache
+	cache    domain.TeleOMACache
 }
 
 func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
@@ -90,7 +89,7 @@ func (s *service) GetCurrentProblems() (domain.CurrentProblemsApp, error) {
 	return currentProblems, nil
 }
 
-func NewService(database *db.Database, cache cache.TeleOMACache) Service {
+func NewService(database *db.Database, cache domain.TeleOMACache) Service {
 	return &service{
 		database: database,
 		cache:    cache,

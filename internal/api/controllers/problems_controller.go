@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/cache"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/problems"
@@ -23,10 +23,10 @@ type problemsController struct {
 	database *db.Database
 	manager  permissions.Manager
 	logger   crud.Logger
-	cache    cache.TeleOMACache
+	cache    domain.TeleOMACache
 }
 
-func NewProblemsController(database *db.Database, manager permissions.Manager, cache cache.TeleOMACache) ProblemsController {
+func NewProblemsController(database *db.Database, manager permissions.Manager, cache domain.TeleOMACache) ProblemsController {
 	logger := crud.NewLogger(database)
 	return &problemsController{
 		database: database,

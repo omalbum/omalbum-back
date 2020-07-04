@@ -40,7 +40,7 @@ func BuildApplication(db *db.Database) *Application {
 
 	authMiddleware := middlewares.NewAuthMiddleware(db)
 	adminMiddleware := middlewares.NewAdminMiddleware(db, manager)
-	userProblemMiddleware := middlewares.NewUserProblemMiddleware(db, manager)
+	userProblemMiddleware := middlewares.NewUserProblemMiddleware(db, manager, teleOMACache)
 	registerController := controllers.NewRegisterController(db, mail)
 	userController := controllers.NewUserController(db, manager, mail)
 	adminController := controllers.NewAdminController(db, manager)

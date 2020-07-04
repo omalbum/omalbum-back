@@ -5,7 +5,6 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"time"
 )
 
 type Service interface {
@@ -44,7 +43,7 @@ func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
 		}
 	}
 	allProblems := domain.AllProblemsApp{Problems: problems}
-	s.cache.SetWithTTL(domain.AllProblemsCacheKey, allProblems, time.Second)
+	s.cache.SetWithTTL(domain.AllProblemsCacheKey, allProblems, domain.DefaultTimeToLive)
 	return allProblems, nil
 }
 
@@ -60,7 +59,7 @@ func (s *service) GetNextProblems() (domain.NextProblemsApp, error) {
 		problems[i] = problemToProblemNextApp(prob)
 	}
 	nextProblems := domain.NextProblemsApp{NextProblems: problems}
-	s.cache.SetWithTTL(domain.NextProblemsCacheKey, nextProblems, time.Second)
+	s.cache.SetWithTTL(domain.NextProblemsCacheKey, nextProblems, domain.DefaultTimeToLive)
 	return nextProblems, nil
 }
 
@@ -85,7 +84,7 @@ func (s *service) GetCurrentProblems() (domain.CurrentProblemsApp, error) {
 		problems[i].Tags = tags
 	}
 	currentProblems := domain.CurrentProblemsApp{CurrentProblems: problems}
-	s.cache.SetWithTTL(domain.CurrentProblemsCacheKey, currentProblems, time.Second)
+	s.cache.SetWithTTL(domain.CurrentProblemsCacheKey, currentProblems, domain.DefaultTimeToLive)
 	return currentProblems, nil
 }
 
@@ -97,6 +96,10 @@ func NewService(database *db.Database, cache domain.TeleOMACache) Service {
 }
 
 func (s *service) GetProblemById(problemId uint) (domain.ProblemApp, error) {
+	var res = s.cache.Get(domain.ProblemCacheKey(problemId))
+	if res != nil {
+		return res.(domain.ProblemApp), nil
+	}
 	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
 	if problem == nil {
 		return domain.ProblemApp{}, messages.NewNotFound("problem_not_found", "problem not found")
@@ -108,6 +111,8 @@ func (s *service) GetProblemById(problemId uint) (domain.ProblemApp, error) {
 		tags[i] = problemTag.Tag
 	}
 	problemApp.Tags = tags
+
+	s.cache.SetWithTTL(domain.ProblemCacheKey(problemId), problemApp, domain.DefaultTimeToLive)
 	return problemApp, nil
 }
 

@@ -8,9 +8,10 @@ import (
 type CacheKey string
 
 const (
-	AllProblemsCacheKey     CacheKey = "all_problems"
-	CurrentProblemsCacheKey CacheKey = "current_problems"
-	NextProblemsCacheKey    CacheKey = "next_problems"
+	AllProblemsCacheKey     CacheKey      = "all_problems"
+	CurrentProblemsCacheKey CacheKey      = "current_problems"
+	NextProblemsCacheKey    CacheKey      = "next_problems"
+	DefaultTimeToLive       time.Duration = 1 * time.Second
 )
 
 type TeleOMACache interface {
@@ -22,6 +23,14 @@ type TeleOMACache interface {
 
 	GetUserAlbum(userId uint) interface{}
 	ClearUserCache(userId uint) int //clears the user's cache
+}
+
+func ProblemCacheKey(problemId uint) CacheKey {
+	return CacheKey("problem_" + strconv.Itoa(int(problemId)))
+}
+
+func ProblemViewableCacheKey(problemId uint) CacheKey {
+	return CacheKey("problem_" + strconv.Itoa(int(problemId)) + "_viewable")
 }
 
 func UserAlbumCacheKey(userId uint) CacheKey {

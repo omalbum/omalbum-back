@@ -37,6 +37,10 @@ func (a *userProblemMiddleware) ViewAuthCheck(c *gin.Context) {
 		problemIsViewable = res.(bool)
 	} else {
 		problem := crud.NewDatabaseProblemRepo(a.database).GetById(problemId)
+		if problem == nil {
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{})
+			return
+		}
 		problemIsViewable = problem.IsViewable()
 		a.cache.SetWithTTL(key, problemIsViewable, domain.DefaultTimeToLive)
 	}

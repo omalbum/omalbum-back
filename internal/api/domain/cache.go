@@ -20,7 +20,6 @@ type TeleOMACache interface {
 	SetWithExpiration(key CacheKey, value interface{}, expirationDate time.Time)
 	Delete(key CacheKey)
 	Clear() int // clears everything
-
 	GetUserAlbum(userId uint) interface{}
 	ClearUserCache(userId uint) int //clears the user's cache
 }

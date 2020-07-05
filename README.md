@@ -38,4 +38,18 @@ docker run -it --rm --network host --name teleoma teleoma
 ```sh
 docker run -it --rm --name mysql-teleoma -p 3306:3306 -v db-data:/var/lib/mysql-teleoma -e MYSQL_ROOT_PASSWORD=teleoma -e MYSQL_PASSWORD=teleoma -e MYSQL_USER=teleoma -e MYSQL_DATABASE=teleoma mysql:8.0.19
 ```
+
+## Build and Run on Testing Server 
+PENDING
+
+
+## Build and Run on Production Server
+1. Tag a commit as a release version with the following rule:
+``` vM.m.p ``` being M: Major version, m: minor version and p: patch
+2. Push tag:
+``` git push --tag ```
+
+Example:
+1. ``` git tag v1.0.2 ```
+2. ``` git push --tag ```
  

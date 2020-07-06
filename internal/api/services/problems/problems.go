@@ -16,11 +16,15 @@ type Service interface {
 
 type service struct {
 	database *db.Database
+	cache    domain.TeleOMACache
 }
 
 func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
+	var res = s.cache.Get(domain.AllProblemsCacheKey)
+	if res != nil {
+		return res.(domain.AllProblemsApp), nil
+	}
 	//TODO Optimizacion: traer solamente las tags necesarias con un inner join
-	// a futuro, meter cache
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
 	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
 	problems := make([]domain.ProblemApp, len(problemsDatabase))
@@ -38,21 +42,33 @@ func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
 			problems[i].Tags = append(problems[i].Tags, tag.Tag)
 		}
 	}
-	return domain.AllProblemsApp{Problems: problems}, nil
+	allProblems := domain.AllProblemsApp{Problems: problems}
+	s.cache.SetWithTTL(domain.AllProblemsCacheKey, allProblems, domain.DefaultTimeToLive)
+	return allProblems, nil
 }
 
 func (s *service) GetNextProblems() (domain.NextProblemsApp, error) {
+	var res = s.cache.Get(domain.NextProblemsCacheKey)
+	if res != nil {
+		return res.(domain.NextProblemsApp), nil
+	}
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetNextProblems()
 	problems := make([]domain.ProblemNextApp, len(problemsDatabase))
 
 	for i, prob := range problemsDatabase {
 		problems[i] = problemToProblemNextApp(prob)
 	}
-	return domain.NextProblemsApp{NextProblems: problems}, nil
+	nextProblems := domain.NextProblemsApp{NextProblems: problems}
+	s.cache.SetWithTTL(domain.NextProblemsCacheKey, nextProblems, domain.DefaultTimeToLive)
+	return nextProblems, nil
 }
 
 func (s *service) GetCurrentProblems() (domain.CurrentProblemsApp, error) {
-	//TODO Optimizacion: traer roles con un inner join para hacer menos queries a la DB
+	var res = s.cache.Get(domain.CurrentProblemsCacheKey)
+	if res != nil {
+		return res.(domain.CurrentProblemsApp), nil
+	}
+	//TODO Optimizacion: traer tags con un inner join para hacer menos queries a la DB
 	// eso es lo costoso de esta funcion.
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetCurrentProblems()
 	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
@@ -67,16 +83,23 @@ func (s *service) GetCurrentProblems() (domain.CurrentProblemsApp, error) {
 		}
 		problems[i].Tags = tags
 	}
-	return domain.CurrentProblemsApp{CurrentProblems: problems}, nil
+	currentProblems := domain.CurrentProblemsApp{CurrentProblems: problems}
+	s.cache.SetWithTTL(domain.CurrentProblemsCacheKey, currentProblems, domain.DefaultTimeToLive)
+	return currentProblems, nil
 }
 
-func NewService(database *db.Database) Service {
+func NewService(database *db.Database, cache domain.TeleOMACache) Service {
 	return &service{
 		database: database,
+		cache:    cache,
 	}
 }
 
 func (s *service) GetProblemById(problemId uint) (domain.ProblemApp, error) {
+	var res = s.cache.Get(domain.ProblemCacheKey(problemId))
+	if res != nil {
+		return res.(domain.ProblemApp), nil
+	}
 	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
 	if problem == nil {
 		return domain.ProblemApp{}, messages.NewNotFound("problem_not_found", "problem not found")
@@ -88,6 +111,8 @@ func (s *service) GetProblemById(problemId uint) (domain.ProblemApp, error) {
 		tags[i] = problemTag.Tag
 	}
 	problemApp.Tags = tags
+
+	s.cache.SetWithTTL(domain.ProblemCacheKey(problemId), problemApp, domain.DefaultTimeToLive)
 	return problemApp, nil
 }
 

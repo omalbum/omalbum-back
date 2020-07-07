@@ -35,7 +35,7 @@ func (r *registerController) Register(context *gin.Context) {
 
 	if err != nil {
 		r.logger.LogAnonymousAction("registration failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
-		context.JSON(http.StatusBadRequest, messages.New("bad_request", "bad request"))
+		context.JSON(http.StatusBadRequest, err)
 		return
 	}
 

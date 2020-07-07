@@ -53,6 +53,6 @@ func (r *registerController) Register(context *gin.Context) {
 	// comento porque por ahora no usamos esto
 	// registrationJob := mailer.NewRegistrationJob(r.mailer, registrationApp.Email, registrationApp.Name)
 	// jobrunner.Now(registrationJob)
-	r.logger.LogUserAction(user.ID, "user registered", http.StatusOK, context.Request.Method, context.Request.URL.String())
+	r.logger.LogUserAction(user.ID, "user registered", http.StatusCreated, context.Request.Method, context.Request.URL.String())
 	context.JSON(http.StatusCreated, gin.H{"user_id": user.ID})
 }

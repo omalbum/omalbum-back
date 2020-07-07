@@ -31,9 +31,15 @@ func NewRegisterController(database *db.Database, mailer mailer.Mailer) Register
 
 func (r *registerController) Register(context *gin.Context) {
 	var registrationApp domain.RegistrationApp
-	_ = context.Bind(&registrationApp)
+	var err = context.Bind(&registrationApp)
 
-	var err = registrationApp.Validate()
+	if err != nil {
+		r.logger.LogAnonymousAction("registration failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
+		context.JSON(http.StatusBadRequest, messages.New("bad_request", "bad request"))
+		return
+	}
+
+	err = registrationApp.Validate()
 
 	if err != nil {
 		r.logger.LogAnonymousAction("registration failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())

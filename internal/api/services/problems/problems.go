@@ -123,6 +123,7 @@ func problemToProblemApp(problem domain.Problem) domain.ProblemApp {
 		ReleaseDate:    problem.DateContestStart,
 		Deadline:       problem.DateContestEnd,
 		Statement:      problem.Statement,
+		Series:         problem.Series,
 	}
 }
 
@@ -131,5 +132,6 @@ func problemToProblemNextApp(problem domain.Problem) domain.ProblemNextApp {
 		ProblemId:   problem.ID,
 		ReleaseDate: problem.DateContestStart,
 		Deadline:    problem.DateContestEnd,
+		Series:      problem.Series,
 	}
 }

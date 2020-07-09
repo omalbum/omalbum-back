@@ -34,9 +34,11 @@ type service struct {
 func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	allProblems := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
 	var finishedIds = make([]uint, 0)
+	var idToProblem = make(map[uint]domain.Problem)
 	for _, p := range allProblems {
 		if p.IsContestFinished() {
 			finishedIds = append(finishedIds, p.ID)
+			idToProblem[p.ID] = p
 		}
 	}
 	sort.Slice(finishedIds, func(i, j int) bool { return finishedIds[i] < finishedIds[j] })
@@ -49,6 +51,7 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 		album[i].Solved = false
 		album[i].SolvedDuringContest = false
 		album[i].Tags = make([]string, 0)
+		album[i].Series = idToProblem[problemId].Series
 	}
 	userAttempts := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserId(userId)
 	for _, userAttempt := range userAttempts {

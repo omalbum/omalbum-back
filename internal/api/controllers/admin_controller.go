@@ -49,7 +49,6 @@ func (a *adminController) PostProblem(context *gin.Context) {
 	var err = context.Bind(&newProblem)
 
 	if err != nil {
-		r.logger.LogAnonymousAction("problem creation failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}

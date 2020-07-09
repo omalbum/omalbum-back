@@ -46,7 +46,14 @@ func (a *adminController) GetProblem(context *gin.Context) {
 
 func (a *adminController) PostProblem(context *gin.Context) {
 	var newProblem domain.ProblemAdminApp
-	_ = context.Bind(&newProblem)
+	var err = context.Bind(&newProblem)
+
+	if err != nil {
+		r.logger.LogAnonymousAction("problem creation failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
+
 	userId := params.GetCallerID(context)
 	problem, err := admin.NewService(a.database).CreateProblem(userId, newProblem)
 	if err != nil {

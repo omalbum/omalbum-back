@@ -1,4 +1,4 @@
-# teleOMA API
+# OMAlbum API
 
 ## Setup
 

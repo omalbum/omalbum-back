@@ -54,6 +54,7 @@ type Problem struct {
 	Hint             string
 	OfficialSolution string
 	Series           string
+	NumberInSeries   uint
 }
 
 type UserProblemAttempt struct {

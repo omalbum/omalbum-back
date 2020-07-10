@@ -85,9 +85,10 @@ type EmailWrappedApp struct {
 }
 
 type ProblemSummaryApp struct {
-	ProblemId uint   `json:"problem_id"`
-	Series    string `json:"series"`
-	Tags      []string
+	ProblemId      uint     `json:"problem_id"`
+	Series         string   `json:"series"`
+	NumberInSeries uint     `json:"number_in_series"`
+	Tags           []string `json:"tags"`
 }
 
 type ProblemsApp struct {
@@ -95,13 +96,13 @@ type ProblemsApp struct {
 }
 
 type ProblemStatsApp struct {
-	ProblemId uint `json:"problem_id"`
-
+	ProblemId           uint      `json:"problem_id"`
 	Attempts            uint      `json:"attempts"`
 	Solved              bool      `json:"solved"`
 	SolvedDuringContest bool      `json:"solved_during_contest"`
 	DateSolved          time.Time `json:"date_solved"`
 	Series              string    `json:"series"`
+	NumberInSeries      uint      `json:"number_in_series"`
 	Tags                []string  `json:"tags"`
 }
 type AlbumApp struct {
@@ -117,7 +118,7 @@ type CurrentProblemsApp struct {
 }
 
 type AllProblemsApp struct {
-	Problems []ProblemApp `json:"all_problems"`
+	Problems []ProblemSummaryApp `json:"all_problems"`
 }
 
 type ProblemAdminApp struct {
@@ -128,6 +129,7 @@ type ProblemAdminApp struct {
 	Annotations      string    `json:"annotations"`
 	Hint             string    `json:"hint"`
 	Series           string    `json:"series"`
+	NumberInSeries   uint      `json:"number_in_series"`
 	Tags             []string  `json:"tags"`
 	OfficialSolution string    `json:"official_solution"`
 	ReleaseDate      time.Time `json:"release_date"`
@@ -140,16 +142,18 @@ type ProblemApp struct {
 	Statement      string    `json:"statement"`
 	OmaforosPostId uint      `json:"omaforos_post_id"`
 	Series         string    `json:"series"`
+	NumberInSeries uint      `json:"number_in_series"`
 	Tags           []string  `json:"tags"`
 	ReleaseDate    time.Time `json:"release_date"`
 	Deadline       time.Time `json:"deadline"`
 }
 
 type ProblemNextApp struct {
-	ProblemId   uint      `json:"problem_id"`
-	ReleaseDate time.Time `json:"release_date"`
-	Deadline    time.Time `json:"deadline"`
-	Series      string    `json:"series"`
+	ProblemId      uint      `json:"problem_id"`
+	ReleaseDate    time.Time `json:"release_date"`
+	Deadline       time.Time `json:"deadline"`
+	Series         string    `json:"series"`
+	NumberInSeries uint      `json:"number_in_series"`
 }
 
 type ProblemAttemptApp struct {

@@ -178,6 +178,7 @@ func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
 		Location:         user.Location,
 		School:           user.School,
 		RegistrationDate: user.RegistrationDate,
+		IsAdmin:          user.IsAdmin,
 	}
 }
 func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) error {

@@ -16,9 +16,8 @@ import (
 )
 
 type user struct {
-	UserID   uint `json:"user_id"`
-	UserName string `json:"user_name"`
-	IsAdmin bool `json:"is_admin"`
+	UserID   uint
+	UserName string
 }
 
 type authMiddlewareHandler struct {
@@ -53,7 +52,6 @@ func (a *authMiddlewareHandler) authenticator(c *gin.Context) (interface{}, erro
 		a.user = &user{
 			UserID:   a.retrievedUser.ID,
 			UserName: a.retrievedUser.UserName,
-			IsAdmin : a.retrievedUser.IsAdmin,
 		}
 		return a.user, nil
 	}

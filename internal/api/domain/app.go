@@ -73,6 +73,7 @@ type UserApp struct {
 	Location         string    `json:"location"`
 	School           string    `json:"school"`
 	RegistrationDate time.Time `json:"registration_date"`
+	IsAdmin          bool      `json:"is_admin"`
 }
 
 type PasswordWrappedApp struct {

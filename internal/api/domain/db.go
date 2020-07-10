@@ -49,11 +49,11 @@ type Problem struct {
 	DateContestEnd   time.Time
 	Statement        string
 	Answer           int
-	Series           string
 	Annotations      string
 	IsDraft          bool
 	Hint             string
 	OfficialSolution string
+	Series           string
 }
 
 type UserProblemAttempt struct {

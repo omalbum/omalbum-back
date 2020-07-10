@@ -52,6 +52,7 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 		album[i].SolvedDuringContest = false
 		album[i].Tags = make([]string, 0)
 		album[i].Series = idToProblem[problemId].Series
+		album[i].NumberInSeries = idToProblem[problemId].NumberInSeries
 	}
 	userAttempts := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserId(userId)
 	for _, userAttempt := range userAttempts {

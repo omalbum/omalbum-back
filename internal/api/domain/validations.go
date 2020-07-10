@@ -17,6 +17,8 @@ func (registration RegistrationApp) Validate() error {
 		validation.Field(&registration.Name, validation.Required),
 		validation.Field(&registration.LastName, validation.Required),
 		validation.Field(&registration.Email, validation.Required, is.Email),
+		validation.Field(&registration.Gender, validation.Required),
+		validation.Field(&registration.Country, validation.Required),
 	)
 }
 
@@ -28,6 +30,8 @@ func (registration RegistrationApp) ValidateWithoutPassword() error {
 		validation.Field(&registration.Name, validation.Required),
 		validation.Field(&registration.LastName, validation.Required),
 		validation.Field(&registration.Email, validation.Required, is.Email),
+		validation.Field(&registration.Gender, validation.Required),
+		validation.Field(&registration.Country, validation.Required),
 	)
 }
 

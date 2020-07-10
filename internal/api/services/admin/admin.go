@@ -107,6 +107,7 @@ func problemToProblemAdminApp(problem domain.Problem) domain.ProblemAdminApp {
 		Deadline:         problem.DateContestEnd,
 		Statement:        problem.Statement,
 		Series:           problem.Series,
+		NumberInSeries:   problem.NumberInSeries,
 		Answer:           problem.Answer,
 		Annotations:      problem.Annotations,
 		IsDraft:          problem.IsDraft,

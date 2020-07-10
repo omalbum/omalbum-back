@@ -12,6 +12,8 @@ type UserRepo interface {
 	Delete(userId uint) error
 }
 
+// el numero dentro de la serie lo maneja automaticamente este repo
+// un problema que no es draft no puede volver a ser draft
 type ProblemRepo interface {
 	GetById(problemId uint) *Problem
 	Create(problem *Problem) error
@@ -20,6 +22,7 @@ type ProblemRepo interface {
 	GetCurrentProblems() []Problem // devuelve los problemas que se pueden ver y cuyo deadline es futuro (sin drafts)
 	GetNextProblems() []Problem    // devuelve los problemas que todavia no se pueden ver (sin drafts)
 	GetAllProblems() []Problem     // devuelve los problemas que ya se pueden ver (sin  drafts)
+	GetNextNumberInSeries(series string) uint
 }
 
 type UserProblemAttemptRepo interface {

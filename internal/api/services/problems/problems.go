@@ -27,13 +27,13 @@ func (s *service) GetAllProblems() (domain.AllProblemsApp, error) {
 	//TODO Optimizacion: traer solamente las tags necesarias con un inner join
 	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
 	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
-	problems := make([]domain.ProblemApp, len(problemsDatabase))
+	problems := make([]domain.ProblemSummaryApp, len(problemsDatabase))
 	position := make(map[uint]int)
 	for i, p := range problemsDatabase {
 		position[p.ID] = i
 	}
 	for i, prob := range problemsDatabase {
-		problems[i] = problemToProblemApp(prob)
+		problems[i] = problemToProblemSummaryApp(prob)
 	}
 	var problemTags = tagRepo.GetAllTags()
 	for _, tag := range problemTags {
@@ -124,14 +124,24 @@ func problemToProblemApp(problem domain.Problem) domain.ProblemApp {
 		Deadline:       problem.DateContestEnd,
 		Statement:      problem.Statement,
 		Series:         problem.Series,
+		NumberInSeries: problem.NumberInSeries,
 	}
 }
 
 func problemToProblemNextApp(problem domain.Problem) domain.ProblemNextApp {
 	return domain.ProblemNextApp{
-		ProblemId:   problem.ID,
-		ReleaseDate: problem.DateContestStart,
-		Deadline:    problem.DateContestEnd,
-		Series:      problem.Series,
+		ProblemId:      problem.ID,
+		ReleaseDate:    problem.DateContestStart,
+		Deadline:       problem.DateContestEnd,
+		Series:         problem.Series,
+		NumberInSeries: problem.NumberInSeries,
+	}
+}
+
+func problemToProblemSummaryApp(problem domain.Problem) domain.ProblemSummaryApp {
+	return domain.ProblemSummaryApp{
+		ProblemId:      problem.ID,
+		Series:         problem.Series,
+		NumberInSeries: problem.NumberInSeries,
 	}
 }

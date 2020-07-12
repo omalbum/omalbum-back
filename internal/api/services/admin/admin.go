@@ -9,6 +9,7 @@ import (
 )
 
 type Service interface {
+	GetAllProblems() domain.AllProblemsAdminApp
 	GetProblem(problemId uint) (domain.ProblemAdminApp, error)
 	CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error)
 	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.Problem, error)
@@ -17,6 +18,28 @@ type Service interface {
 
 type service struct {
 	database *db.Database
+}
+
+func (s *service) GetAllProblems() domain.AllProblemsAdminApp {
+	problemsDatabase := crud.NewDatabaseProblemRepo(s.database).GetAllProblemsForAdmin()
+	problems := make([]domain.ProblemAdminApp, len(problemsDatabase))
+	position := make(map[uint]int)
+	for i, p := range problemsDatabase {
+		position[p.ID] = i
+	}
+	for i, prob := range problemsDatabase {
+		problems[i] = problemToProblemAdminApp(prob)
+	}
+	tagRepo := crud.NewDatabaseProblemTagRepo(s.database)
+	var problemTags = tagRepo.GetAllTags()
+	for _, tag := range problemTags {
+		problemId := tag.ProblemId
+		if i, ok := position[problemId]; ok {
+			problems[i].Tags = append(problems[i].Tags, tag.Tag)
+		}
+	}
+	allProblemsAdmin := domain.AllProblemsAdminApp{Problems: problems}
+	return allProblemsAdmin
 }
 
 func (s *service) GetProblem(problemId uint) (domain.ProblemAdminApp, error) {
@@ -102,6 +125,7 @@ func problemAdminAppToProblem(newProblem domain.ProblemAdminApp) domain.Problem 
 
 func problemToProblemAdminApp(problem domain.Problem) domain.ProblemAdminApp {
 	return domain.ProblemAdminApp{
+		ProblemId:        problem.ID,
 		OmaforosPostId:   problem.OmaforosPostId,
 		ReleaseDate:      problem.DateContestStart,
 		Deadline:         problem.DateContestEnd,

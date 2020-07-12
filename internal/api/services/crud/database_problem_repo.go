@@ -101,3 +101,9 @@ func (dr *databaseProblemRepo) GetAllProblems() []domain.Problem {
 	dr.database.DB.Where("(problems.date_contest_start < ? ) AND  (NOT problems.is_draft)", t).Find(&problems)
 	return problems
 }
+
+func (dr *databaseProblemRepo) GetAllProblemsForAdmin() []domain.Problem {
+	var problems []domain.Problem
+	dr.database.DB.Find(&problems)
+	return problems
+}

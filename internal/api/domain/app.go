@@ -121,6 +121,10 @@ type AllProblemsApp struct {
 	Problems []ProblemSummaryApp `json:"all_problems"`
 }
 
+type AllProblemsAdminApp struct {
+	Problems []ProblemAdminApp `json:"all_problems"`
+}
+
 type ProblemAdminApp struct {
 	ProblemId        uint      `json:"problem_id"`
 	Statement        string    `json:"statement"`

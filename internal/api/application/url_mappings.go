@@ -39,6 +39,7 @@ func MapURLs(app *Application, router *gin.Engine) {
 		v1.POST("/users/answer", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PostAnswer)
 
 		// Admin endpoints
+		v1.GET("/admin/problems/all", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.GetAllProblems)
 		v1.GET("/admin/problem/:problem_id", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.GetProblem)
 		v1.POST("/admin/problem", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.PostProblem)
 		v1.PUT("/admin/problem/:problem_id", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.PutProblem)

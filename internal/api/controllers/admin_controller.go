@@ -17,6 +17,7 @@ type AdminController interface {
 	PostProblem(context *gin.Context)
 	PutProblem(context *gin.Context)
 	DeleteProblem(context *gin.Context)
+	GetAllProblems(context *gin.Context)
 }
 
 type adminController struct {
@@ -32,6 +33,11 @@ func NewAdminController(database *db.Database, manager permissions.Manager) Admi
 		manager:  manager,
 		logger:   logger,
 	}
+}
+
+func (a *adminController) GetAllProblems(context *gin.Context) {
+	problems := admin.NewService(a.database).GetAllProblems()
+	context.JSON(http.StatusOK, problems)
 }
 
 func (a *adminController) GetProblem(context *gin.Context) {

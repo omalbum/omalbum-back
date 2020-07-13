@@ -17,11 +17,17 @@ func NewDatabaseSchoolRepo(database *db.Database) domain.SchoolRepo {
 	}
 }
 
-func (dr *databaseSchoolRepo) GetSchools(searchText string) []domain.School {
+func (dr *databaseSchoolRepo) GetSchools(searchText string, province string, department string) []domain.School {
 	var schools []domain.School
-	s := strings.Split(searchText, "")
-	pattern := "%" + strings.Join(s, "%") + "%"
-	dr.database.DB.Where("name LIKE ?", pattern).Find(&schools)
+	matchExact := true
+	var pattern string
+	if matchExact {
+		pattern = "%" + searchText + "%"
+	} else {
+		s := strings.Split(searchText, "")
+		pattern = "%" + strings.Join(s, "%") + "%"
+	}
+	dr.database.DB.Where("name LIKE ? AND province = ? AND department = ?", pattern, province, department).Find(&schools)
 	return schools
 }
 

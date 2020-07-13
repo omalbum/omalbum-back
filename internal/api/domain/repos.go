@@ -52,5 +52,5 @@ type ExpandedUserProblemAttemptRepo interface {
 }
 
 type SchoolRepo interface {
-	GetSchools(searchText string) []School
+	GetSchools(searchText string, province string, department string) []School
 }

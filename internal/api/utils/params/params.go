@@ -44,3 +44,13 @@ func GetCallerID(context *gin.Context) uint {
 func GetSearchText(context *gin.Context) string {
 	return GetStringValueFromParam(context, "search_text")
 }
+
+// Returns the province for schools from the params
+func GetProvince(context *gin.Context) string {
+	return GetStringValueFromParam(context, "province")
+}
+
+// Returns the department for schools from the params
+func GetDepartment(context *gin.Context) string {
+	return GetStringValueFromParam(context, "department")
+}

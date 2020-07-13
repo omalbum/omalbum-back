@@ -49,3 +49,7 @@ type ProblemTagRepo interface {
 type ExpandedUserProblemAttemptRepo interface {
 	GetByUserId(userId uint) []ExpandedUserProblemAttempt
 }
+
+type SchoolRepo interface {
+	GetSchools(searchText string) []School
+}

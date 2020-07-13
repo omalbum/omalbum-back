@@ -26,6 +26,7 @@ func CreateTables(db *db.Database) {
 		&domain.UserProblemAttempt{},
 		&domain.ProblemTag{},
 		&domain.UserAction{},
+		&domain.School{},
 	)
 }
 

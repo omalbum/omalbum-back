@@ -169,3 +169,12 @@ type AttemptResultApp struct {
 	Result    string    `json:"result"`
 	Deadline  time.Time `json:"deadline"`
 }
+
+type SchoolsApp struct {
+	Problems []SchoolApp `json:"schools"`
+}
+type SchoolApp struct {
+	Name        string `json:"name"`
+	Province    string `json:"province"`
+	Department  string `json:"department"`
+}

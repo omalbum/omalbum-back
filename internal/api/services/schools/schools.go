@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	GetSchools(searchText string) ([]domain.School, error)
+	GetSchools(searchText string, province string, department string) ([]domain.School, error)
 }
 
 type service struct {
@@ -23,7 +23,7 @@ func NewService(database *db.Database, mailer mailer.Mailer) Service {
 	}
 }
 
-func (s *service) GetSchools(searchText string) ([]domain.School, error) {
-	schools := crud.NewDatabaseSchoolRepo(s.database).GetSchools(searchText)
+func (s *service) GetSchools(searchText string, province string, department string) ([]domain.School, error) {
+	schools := crud.NewDatabaseSchoolRepo(s.database).GetSchools(searchText, province, department)
 	return schools, nil
 }

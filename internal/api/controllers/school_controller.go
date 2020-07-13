@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
@@ -36,8 +35,9 @@ func NewSchoolController(database *db.Database, manager permissions.Manager, mai
 
 func (u *schoolController) GetSchools(context *gin.Context) {
 	searchText := params.GetSearchText(context)
-	fmt.Print("texto " + searchText)
-	schoolsApp, err := schools.NewService(u.database, u.mailer).GetSchools(searchText)
+	province := params.GetProvince(context)
+	department := params.GetDepartment(context)
+	schoolsApp, err := schools.NewService(u.database, u.mailer).GetSchools(searchText, province , department)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return

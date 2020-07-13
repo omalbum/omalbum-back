@@ -52,4 +52,5 @@ type ExpandedUserProblemAttemptRepo interface {
 
 type SchoolRepo interface {
 	GetSchools(searchText string, province string, department string) []School
+	Create(school *School) error
 }

@@ -76,6 +76,7 @@ type ExpandedUserProblemAttempt struct {
 	DateContestEnd   time.Time
 	DateContestStart time.Time
 	UserId           uint
+	AttemptId        uint
 	AttemptDate      time.Time
 	ProblemId        uint
 	UserAnswer       int

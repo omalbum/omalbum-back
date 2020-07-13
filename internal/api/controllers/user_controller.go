@@ -134,7 +134,7 @@ func (u *userController) GetProblemAttemptsByUser(context *gin.Context) {
 		return
 	}
 	problemID := params.GetProblemID(context)
-	problemStats, _, err := users.NewService(u.database, u.mailer).GetProblemAttemptsByUser(userID, problemID)
+	problemStats, err := users.NewService(u.database, u.mailer).GetProblemAttemptsByUser(userID, problemID)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return

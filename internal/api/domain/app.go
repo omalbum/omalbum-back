@@ -105,6 +105,23 @@ type ProblemStatsApp struct {
 	NumberInSeries      uint      `json:"number_in_series"`
 	Tags                []string  `json:"tags"`
 }
+
+type ProblemAttemptsByUserApp struct {
+	ProblemId           uint                      `json:"problem_id"`
+	Attempts            uint                      `json:"attempts"`
+	Solved              bool                      `json:"solved"`
+	SolvedDuringContest bool                      `json:"solved_during_contest"`
+	DateSolved          time.Time                 `json:"date_solved"`
+	Deadline            time.Time                 `json:"deadline"`
+	AttemptList         []AttemptResultForListApp `json:"attempt_list"`
+}
+
+type AttemptResultForListApp struct {
+	AttemptDate time.Time `json:"attempt_date"`
+	Result      string    `json:"result"`
+	GivenAnswer int       `json:"given_answer"`
+}
+
 type AlbumApp struct {
 	Album []ProblemStatsApp `json:"album"`
 }
@@ -165,7 +182,6 @@ type ProblemAttemptApp struct {
 	Answer    int  `json:"answer"`
 }
 type AttemptResultApp struct {
-	AttemptId uint      `json:"attempt_id"`
-	Result    string    `json:"result"`
-	Deadline  time.Time `json:"deadline"`
+	Result   string    `json:"result"`
+	Deadline time.Time `json:"deadline"`
 }

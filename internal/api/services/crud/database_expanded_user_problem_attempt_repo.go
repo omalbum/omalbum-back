@@ -18,16 +18,12 @@ func (d databaseExpandedUserProblemAttemptRepo) GetByUserId(userId uint) []domai
 	return attempts
 }
 
-func (d databaseExpandedUserProblemAttemptRepo) GetByUserAndProblemId(userId uint, problemId uint, isContestProblem bool) []domain.ExpandedUserProblemAttempt {
+func (d databaseExpandedUserProblemAttemptRepo) GetByUserIdAndProblemId(userId uint, problemId uint) []domain.ExpandedUserProblemAttempt {
 	if userId == 0 {
 		return nil //needed to avoid an empty condition in Where
 	}
 	var attempts []domain.ExpandedUserProblemAttempt
-	duringContestPossibilities := "(1, 0)"
-	if isContestProblem {
-		duringContestPossibilities = "(0)"
-	}
-	d.database.DB.Where("user_id = ? AND problem_id = ? AND during_contest IN ?", userId, problemId, duringContestPossibilities).Find(&attempts)
+	d.database.DB.Where("user_id = ? AND problem_id = ? ", userId, problemId).Find(&attempts)
 	return attempts
 }
 

@@ -24,7 +24,7 @@ type Service interface {
 	ResetPassword(email string) error
 	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
 	GetAlbum(userId uint) (*domain.AlbumApp, error)
-	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemStatsApp, []domain.ExpandedUserProblemAttempt, error)
+	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemAttemptsByUserApp, error)
 }
 
 type service struct {
@@ -79,25 +79,39 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	return &domain.AlbumApp{Album: album}, nil
 }
 
-func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemStatsApp, []domain.ExpandedUserProblemAttempt, error) {
+func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemAttemptsByUserApp, error) {
 	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
-	userAttemptsInProblem := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserAndProblemId(userId, problemId, problem.IsContestProblem())
-	attempt := domain.ProblemStatsApp{
-		ProblemId:     problemId,
-		Attempts:  0,
-		Solved:       false,
-		SolvedDuringContest: false,
+	if problem == nil {
+		return nil, messages.NewNotFound("problem_not_found", "problem not found")
+
 	}
-	for _, userAttempt := range userAttemptsInProblem {
-		attempt.Attempts++
-		if userAttempt.IsCorrect {
-			attempt.Solved = true
+	isContest := problem.IsContestProblem()
+	userAttemptsInProblem := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserIdAndProblemId(userId, problemId)
+	attempts := domain.ProblemAttemptsByUserApp{
+		ProblemId:           problemId,
+		Attempts:            0,
+		Solved:              false,
+		SolvedDuringContest: false,
+		AttemptList:         make([]domain.AttemptResultForListApp, len(userAttemptsInProblem)),
+		Deadline:            problem.DateContestEnd,
+	}
+	for i, userAttempt := range userAttemptsInProblem {
+		attempts.Attempts++
+		attempts.AttemptList[i].GivenAnswer = userAttempt.Answer
+		attempts.AttemptList[i].AttemptDate = userAttempt.AttemptDate
+		attempts.AttemptList[i].Result = getResult(problem.Answer, userAttempt.UserAnswer, isContest)
+		if userAttempt.IsCorrect && !isContest {
+			attempts.Solved = true
 			if userAttempt.DuringContest {
-				attempt.SolvedDuringContest = true
+				attempts.SolvedDuringContest = true
 			}
+			if attempts.DateSolved.IsZero() || attempts.DateSolved.After(userAttempt.AttemptDate) {
+				attempts.DateSolved = userAttempt.AttemptDate
+			}
+
 		}
 	}
-	return &attempt, userAttemptsInProblem, nil
+	return &attempts, nil
 }
 
 func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (*domain.AttemptResultApp, error) {
@@ -124,18 +138,24 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	if err != nil {
 		return nil, messages.NewBadRequest("error", "error") // esto puede ocurrir?
 	}
-	res := domain.AttemptResultApp{AttemptId: attempt.ID}
-	res.Deadline = problem.DateContestEnd
-	if isContest {
-		res.Result = "wait"
-		return &res, nil
-	}
-	if attempt.UserAnswer == problem.Answer {
-		res.Result = "correct"
-	} else {
-		res.Result = "incorrect"
+	res := domain.AttemptResultApp{
+		Deadline: problem.DateContestEnd,
+		Result:   getResult(problem.Answer, attempt.UserAnswer, isContest),
 	}
 	return &res, nil
+}
+
+func getResult(correctAnswer int, givenAnswer int, isContest bool) string {
+	if isContest {
+		return "wait"
+
+	}
+	if correctAnswer == givenAnswer {
+		return "correct"
+	} else {
+		return "incorrect"
+	}
+
 }
 
 func NewService(database *db.Database, mailer mailer.Mailer) Service {

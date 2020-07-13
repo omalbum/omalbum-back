@@ -48,4 +48,5 @@ type ProblemTagRepo interface {
 
 type ExpandedUserProblemAttemptRepo interface {
 	GetByUserId(userId uint) []ExpandedUserProblemAttempt
+	GetByUserAndProblemId(userId uint, problemId uint, isContestProblem bool) []ExpandedUserProblemAttempt
 }

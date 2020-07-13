@@ -24,7 +24,7 @@ type Service interface {
 	ResetPassword(email string) error
 	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
 	GetAlbum(userId uint) (*domain.AlbumApp, error)
-	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemStatsApp, error)
+	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemStatsApp, []domain.ExpandedUserProblemAttempt, error)
 }
 
 type service struct {
@@ -79,26 +79,25 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	return &domain.AlbumApp{Album: album}, nil
 }
 
-func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemStatsApp, error) {
-	userAttempts := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserId(userId)
+func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemStatsApp, []domain.ExpandedUserProblemAttempt, error) {
+	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
+	userAttemptsInProblem := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserAndProblemId(userId, problemId, problem.IsContestProblem())
 	attempt := domain.ProblemStatsApp{
 		ProblemId:     problemId,
 		Attempts:  0,
 		Solved:       false,
 		SolvedDuringContest: false,
 	}
-	for _, userAttempt := range userAttempts {
-		if userAttempt.ProblemId == problemId {
-			attempt.Attempts++
-			if userAttempt.IsCorrect {
-				attempt.Solved = true
-				if userAttempt.DuringContest {
-					attempt.SolvedDuringContest = true
-				}
+	for _, userAttempt := range userAttemptsInProblem {
+		attempt.Attempts++
+		if userAttempt.IsCorrect {
+			attempt.Solved = true
+			if userAttempt.DuringContest {
+				attempt.SolvedDuringContest = true
 			}
 		}
 	}
-	return &attempt, nil
+	return &attempt, userAttemptsInProblem, nil
 }
 
 func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (*domain.AttemptResultApp, error) {

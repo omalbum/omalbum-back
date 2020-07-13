@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func createDBWithSchoolAndCook() (*db.Database, func() error) {
+func createDBWithSchool() (*db.Database, func() error) {
 	database := db.NewInMemoryDatabase()
 	_ = database.Open()
 	database.DB.LogMode(true)
@@ -30,7 +30,7 @@ func createDBWithSchoolAndCook() (*db.Database, func() error) {
 }
 
 func TestCanGetBySchoolName(t *testing.T) {
-	d, closeDb := createDBWithSchoolAndCook()
+	d, closeDb := createDBWithSchool()
 	defer check.Check(closeDb)
 
 	schoolApp, _ := NewService(d, mailer.NewMock()).GetSchools("cuela", "Buenos Aires", "Depto")
@@ -38,7 +38,7 @@ func TestCanGetBySchoolName(t *testing.T) {
 }
 
 func TestCannotGetSchoolBecauseItIsNotFound(t *testing.T) {
-	d, closeDb := createDBWithSchoolAndCook()
+	d, closeDb := createDBWithSchool()
 	defer check.Check(closeDb)
 
 	_, err := NewService(d, mailer.NewMock()).GetSchools("escuela", "asdasd", "ooooo")

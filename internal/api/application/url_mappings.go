@@ -36,6 +36,7 @@ func MapURLs(app *Application, router *gin.Engine) {
 		v1.PUT("/users/:user_id/password", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PutPassword)
 		v1.POST("/users/password/reset", app.UserController.ResetPassword) //TODO este no va a estar funcional si no configuramos el envio de emails!
 		v1.GET("/users/:user_id/album", app.AuthMiddleware.MiddlewareFunc(), app.UserController.GetAlbum)
+		v1.GET("/users/:user_id/attempts/:problem_id", app.AuthMiddleware.MiddlewareFunc(), app.UserController.GetProblemAttemptsByUser)
 		v1.POST("/users/answer", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PostAnswer)
 
 		// Admin endpoints

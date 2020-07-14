@@ -91,6 +91,7 @@ func RefreshViews(db *db.Database) {
 			problems.answer as answer,
 			problems.date_contest_end as date_contest_end,
 			problems.date_contest_start as date_contest_start,
+			user_problem_attempts.id as attempt_id,
 			user_problem_attempts.user_id as user_id,
 			user_problem_attempts.date as attempt_date,
 			user_problem_attempts.problem_id as problem_id,

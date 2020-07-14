@@ -15,6 +15,18 @@ import (
 	"testing"
 )
 
+var payloadRegisterOk string = `{
+    "user_name": "cdesseno2",
+    "password": "password123",
+    "name": "Carlos",
+    "last_name": "Desseno",
+	"birthdate": "1992-03-14T00:00:00-00:00",
+    "email": "cdesseno@gmail.com",
+    "gender": "male",
+    "country": "Argentina"
+}
+`
+
 func createDBWithUser() (*db.Database, func() error) {
 	database := db.NewInMemoryDatabase()
 	_ = database.Open()
@@ -35,16 +47,7 @@ func TestCanCreateUser(t *testing.T) {
 	d, closeDb, w, c := testing_util.SetupWithDBR(createDBWithUser)
 	defer check.Check(closeDb)
 
-	request := `
-{
-    "user_name": "cdesseno2",
-    "password": "password123",
-    "name": "Carlos",
-    "last_name": "Desseno",
-	"birthdate": "1992-03-14T00:00:00-00:00",
-    "email": "cdesseno@gmail.com"
-}
-`
+	request := payloadRegisterOk
 	c.Request, _ = http.NewRequest("POST", "", bytes.NewBufferString(request))
 	c.Request.Header.Add("Content-Type", gin.MIMEJSON)
 
@@ -56,16 +59,18 @@ func TestCannotCreateUserBecauseThereIsAnotherOneWithTheSameUserName(t *testing.
 	d, closeDb, w, c := testing_util.SetupWithDBR(createDBWithUser)
 	defer check.Check(closeDb)
 
-	request := `
-{
+	request := `{
     "user_name": "admin",
     "password": "password123",
     "name": "Carlos",
     "last_name": "Desseno",
 	"birthdate": "1992-03-14T00:00:00-00:00",
-    "email": "cdesseno@gmail.com"
+    "email": "cdesseno@gmail.com",
+    "gender": "male",
+    "country": "Argentina"
 }
 `
+
 	c.Request, _ = http.NewRequest("POST", "", bytes.NewBufferString(request))
 	c.Request.Header.Add("Content-Type", gin.MIMEJSON)
 

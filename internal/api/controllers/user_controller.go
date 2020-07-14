@@ -19,6 +19,7 @@ type UserController interface {
 	PutPassword(context *gin.Context)
 	ResetPassword(context *gin.Context)
 	GetAlbum(context *gin.Context)
+	GetProblemAttemptsByUser(context *gin.Context)
 	PostAnswer(context *gin.Context)
 }
 
@@ -124,6 +125,21 @@ func (u *userController) GetAlbum(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, *album)
+}
+
+func (u *userController) GetProblemAttemptsByUser(context *gin.Context) {
+	userID := params.GetUserID(context)
+	if !u.manager.IsAdminOrSameUser(context, userID) { //todo esto podria ser un middleware
+		context.JSON(http.StatusForbidden, gin.H{})
+		return
+	}
+	problemID := params.GetProblemID(context)
+	problemStats, err := users.NewService(u.database, u.mailer).GetProblemAttemptsByUser(userID, problemID)
+	if err != nil {
+		context.JSON(messages.GetHttpCode(err), err)
+		return
+	}
+	context.JSON(http.StatusOK, *problemStats)
 }
 
 func (u *userController) PostAnswer(context *gin.Context) {

@@ -24,6 +24,7 @@ type Service interface {
 	ResetPassword(email string) error
 	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
 	GetAlbum(userId uint) (*domain.AlbumApp, error)
+	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemAttemptsByUserApp, error)
 }
 
 type service struct {
@@ -78,6 +79,42 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	return &domain.AlbumApp{Album: album}, nil
 }
 
+func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemAttemptsByUserApp, error) {
+	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
+	if problem == nil {
+		return nil, messages.NewNotFound("problem_not_found", "problem not found")
+
+	}
+	isCurrent := problem.IsCurrentProblem()
+	userAttemptsInProblem := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserIdAndProblemId(userId, problemId)
+	attempts := domain.ProblemAttemptsByUserApp{
+		ProblemId:           problemId,
+		Attempts:            0,
+		IsCurrentProblem:    isCurrent,
+		Solved:              false,
+		SolvedDuringContest: false,
+		AttemptList:         make([]domain.AttemptResultForListApp, len(userAttemptsInProblem)),
+		Deadline:            problem.DateContestEnd,
+	}
+	for i, userAttempt := range userAttemptsInProblem {
+		attempts.Attempts++
+		attempts.AttemptList[i].GivenAnswer = userAttempt.Answer
+		attempts.AttemptList[i].AttemptDate = userAttempt.AttemptDate
+		attempts.AttemptList[i].Result = getResult(problem.Answer, userAttempt.UserAnswer, isCurrent)
+		if userAttempt.IsCorrect && !isCurrent {
+			attempts.Solved = true
+			if userAttempt.DuringContest {
+				attempts.SolvedDuringContest = true
+			}
+			if attempts.DateSolved.IsZero() || attempts.DateSolved.After(userAttempt.AttemptDate) {
+				attempts.DateSolved = userAttempt.AttemptDate
+			}
+
+		}
+	}
+	return &attempts, nil
+}
+
 func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (*domain.AttemptResultApp, error) {
 	problem := crud.NewDatabaseProblemRepo(s.database).GetById(attemptApp.ProblemId)
 	if problem == nil {
@@ -94,7 +131,7 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	}
 	repo := crud.NewDatabaseUserProblemAttemptRepo(s.database)
 	var err error
-	isContest := problem.IsContestProblem()
+	isContest := problem.IsCurrentProblem()
 	if isContest && len(repo.GetByProblemId(problem.ID)) > 0 {
 		return nil, messages.NewForbidden("problem_already_attempted_during_contest", "problem already attempted during contest")
 	}
@@ -102,18 +139,24 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	if err != nil {
 		return nil, messages.NewBadRequest("error", "error") // esto puede ocurrir?
 	}
-	res := domain.AttemptResultApp{AttemptId: attempt.ID}
-	res.Deadline = problem.DateContestEnd
-	if isContest {
-		res.Result = "wait"
-		return &res, nil
-	}
-	if attempt.UserAnswer == problem.Answer {
-		res.Result = "correct"
-	} else {
-		res.Result = "incorrect"
+	res := domain.AttemptResultApp{
+		Deadline: problem.DateContestEnd,
+		Result:   getResult(problem.Answer, attempt.UserAnswer, isContest),
 	}
 	return &res, nil
+}
+
+func getResult(correctAnswer int, givenAnswer int, isContest bool) string {
+	if isContest {
+		return "wait"
+
+	}
+	if correctAnswer == givenAnswer {
+		return "correct"
+	} else {
+		return "incorrect"
+	}
+
 }
 
 func NewService(database *db.Database, mailer mailer.Mailer) Service {

@@ -48,6 +48,7 @@ type ProblemTagRepo interface {
 
 type ExpandedUserProblemAttemptRepo interface {
 	GetByUserId(userId uint) []ExpandedUserProblemAttempt
+	GetByUserIdAndProblemId(userId uint, problemId uint) []ExpandedUserProblemAttempt
 }
 
 type SchoolRepo interface {

@@ -10,7 +10,7 @@ func (problem *Problem) IsViewable() bool {
 	return true
 }
 
-func (problem *Problem) IsContestProblem() bool {
+func (problem *Problem) IsCurrentProblem() bool {
 	now := time.Now()
 	if problem.IsDraft || now.Before(problem.DateContestStart) || problem.DateContestEnd.Before(now) {
 		return false

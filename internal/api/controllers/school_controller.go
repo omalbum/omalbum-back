@@ -37,7 +37,7 @@ func (u *schoolController) GetSchools(context *gin.Context) {
 	searchText := params.GetSearchText(context)
 	province := params.GetProvince(context)
 	department := params.GetDepartment(context)
-	schoolsApp, err := schools.NewService(u.database, u.mailer).GetSchools(searchText, province , department)
+	schoolsApp, err := schools.NewService(u.database, u.mailer).GetSchools(searchText, province, department)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return

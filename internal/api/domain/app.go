@@ -191,8 +191,8 @@ type SchoolsApp struct {
 	Problems []SchoolApp `json:"schools"`
 }
 type SchoolApp struct {
-	Name        string `json:"name"`
-	Province    string `json:"province"`
-	Department  string `json:"department"`
-	Location    string `json:"location"`
+	Name       string `json:"name"`
+	Province   string `json:"province"`
+	Department string `json:"department"`
+	Location   string `json:"location"`
 }

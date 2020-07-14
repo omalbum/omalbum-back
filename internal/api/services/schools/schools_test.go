@@ -21,7 +21,7 @@ func createDBWithSchool() (*db.Database, func() error) {
 	schoolRepo := crud.NewDatabaseSchoolRepo(database)
 	school := domain.School{
 		Name:       "Escuela N° 1",
-		Province: "Buenos Aires",
+		Province:   "Buenos Aires",
 		Department: "Depto",
 	}
 	_ = schoolRepo.Create(&school)

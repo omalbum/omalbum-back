@@ -109,6 +109,7 @@ type ProblemStatsApp struct {
 type ProblemAttemptsByUserApp struct {
 	ProblemId           uint                      `json:"problem_id"`
 	Attempts            uint                      `json:"attempts"`
+	IsCurrentProblem    bool                      `json:"is_current_problem"`
 	Solved              bool                      `json:"solved"`
 	SolvedDuringContest bool                      `json:"solved_during_contest"`
 	DateSolved          time.Time                 `json:"date_solved"`

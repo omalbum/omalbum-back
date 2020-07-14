@@ -85,11 +85,12 @@ func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain
 		return nil, messages.NewNotFound("problem_not_found", "problem not found")
 
 	}
-	isContest := problem.IsContestProblem()
+	isCurrent := problem.IsCurrentProblem()
 	userAttemptsInProblem := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserIdAndProblemId(userId, problemId)
 	attempts := domain.ProblemAttemptsByUserApp{
 		ProblemId:           problemId,
 		Attempts:            0,
+		IsCurrentProblem:    isCurrent,
 		Solved:              false,
 		SolvedDuringContest: false,
 		AttemptList:         make([]domain.AttemptResultForListApp, len(userAttemptsInProblem)),
@@ -99,8 +100,8 @@ func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain
 		attempts.Attempts++
 		attempts.AttemptList[i].GivenAnswer = userAttempt.Answer
 		attempts.AttemptList[i].AttemptDate = userAttempt.AttemptDate
-		attempts.AttemptList[i].Result = getResult(problem.Answer, userAttempt.UserAnswer, isContest)
-		if userAttempt.IsCorrect && !isContest {
+		attempts.AttemptList[i].Result = getResult(problem.Answer, userAttempt.UserAnswer, isCurrent)
+		if userAttempt.IsCorrect && !isCurrent {
 			attempts.Solved = true
 			if userAttempt.DuringContest {
 				attempts.SolvedDuringContest = true
@@ -130,7 +131,7 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	}
 	repo := crud.NewDatabaseUserProblemAttemptRepo(s.database)
 	var err error
-	isContest := problem.IsContestProblem()
+	isContest := problem.IsCurrentProblem()
 	if isContest && len(repo.GetByProblemId(problem.ID)) > 0 {
 		return nil, messages.NewForbidden("problem_already_attempted_during_contest", "problem already attempted during contest")
 	}

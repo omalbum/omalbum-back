@@ -15,6 +15,7 @@ func DropTables(db *db.Database) {
 		&domain.ProblemTag{},
 		&domain.Problem{},
 		&domain.User{},
+		&domain.School{},
 	)
 }
 

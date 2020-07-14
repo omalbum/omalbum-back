@@ -86,7 +86,7 @@ type ExpandedUserProblemAttempt struct {
 
 type School struct {
 	gorm.Model
-	Name            string  `gorm:"unique;"`
+	Name            string
 	Province        string
 	Department      string
 	Location        string

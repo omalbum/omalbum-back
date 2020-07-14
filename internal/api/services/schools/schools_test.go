@@ -3,9 +3,7 @@ package schools
 import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
-	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -21,7 +19,7 @@ func createDBWithSchool() (*db.Database, func() error) {
 	schoolRepo := crud.NewDatabaseSchoolRepo(database)
 	school := domain.School{
 		Name:       "Escuela N° 1",
-		Province: "Buenos Aires",
+		Province:   "Buenos Aires",
 		Department: "Depto",
 	}
 	_ = schoolRepo.Create(&school)
@@ -33,7 +31,7 @@ func TestCanGetBySchoolName(t *testing.T) {
 	d, closeDb := createDBWithSchool()
 	defer check.Check(closeDb)
 
-	schoolApp, _ := NewService(d, mailer.NewMock()).GetSchools("cuela", "Buenos Aires", "Depto")
+	schoolApp := NewService(d).GetSchools("cuela", "Buenos Aires", "Depto")
 	assert.NotNil(t, schoolApp)
 }
 
@@ -41,6 +39,6 @@ func TestCannotGetSchoolBecauseItIsNotFound(t *testing.T) {
 	d, closeDb := createDBWithSchool()
 	defer check.Check(closeDb)
 
-	_, err := NewService(d, mailer.NewMock()).GetSchools("escuela", "asdasd", "ooooo")
-	assert.Equal(t, "school_not_found", messages.GetCode(err))
+	schools := NewService(d).GetSchools("escuela", "asdasd", "ooooo")
+	assert.Equal(t, 0, len(schools))
 }

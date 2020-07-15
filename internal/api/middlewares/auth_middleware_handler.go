@@ -106,7 +106,9 @@ func (a *authMiddlewareHandler) refreshResponse(c *gin.Context, code int, token 
 }
 
 func (a *authMiddlewareHandler) loginResponse(c *gin.Context, code int, token string, expire time.Time) {
-	user, _ := users.NewService(a.database, mailer.NewMock()).GetByUser(a.retrievedUser)
+	s := users.NewService(a.database, mailer.NewMock())
+	s.UpdateLastActiveDate(a.retrievedUser.ID)
+	user, _ := s.GetByUser(a.retrievedUser)
 
 	c.JSON(http.StatusOK, &domain.LoginResponseApp{
 		Token:      token,

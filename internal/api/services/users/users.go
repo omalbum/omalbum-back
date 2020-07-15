@@ -21,6 +21,7 @@ type Service interface {
 	UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error)
 	ChangePassword(userID uint, newPassword string) error
 	ResetPassword(email string) error
+	UpdateLastActiveDate(userID uint)
 	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
 	GetAlbum(userId uint) (*domain.AlbumApp, error)
 	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemAttemptsByUserApp, error)
@@ -294,4 +295,8 @@ func (s *service) ResetPassword(email string) error {
 	jobrunner.Now(resetPasswordJob)
 
 	return nil
+}
+
+func (s *service) UpdateLastActiveDate(userID uint) {
+	_ = crud.NewDatabaseUserRepo(s.database).Update(&domain.User{Model: gorm.Model{ID: userID}, LastActiveDate: time.Now()})
 }

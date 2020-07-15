@@ -46,7 +46,7 @@ func BuildApplication(db *db.Database) *Application {
 	userController := controllers.NewUserController(db, manager, mail)
 	adminController := controllers.NewAdminController(db, manager)
 	problemsController := controllers.NewProblemsController(db, manager, teleOMACache)
-	schoolController := controllers.NewSchoolController(db, manager, mail)
+	schoolController := controllers.NewSchoolController(db)
 	return &Application{
 		AuthMiddleware:        authMiddleware,
 		AdminMiddleware:       adminMiddleware,

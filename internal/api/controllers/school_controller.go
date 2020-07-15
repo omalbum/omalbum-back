@@ -3,8 +3,6 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/schools"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
 	"net/http"
@@ -18,7 +16,7 @@ type schoolController struct {
 	database *db.Database
 }
 
-func NewSchoolController(database *db.Database, manager permissions.Manager, mailer mailer.Mailer) SchoolController {
+func NewSchoolController(database *db.Database) SchoolController {
 	return &schoolController{
 		database: database,
 	}

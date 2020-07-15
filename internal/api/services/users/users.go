@@ -9,7 +9,6 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
-	"sort"
 	"strings"
 	"time"
 )
@@ -34,32 +33,30 @@ type service struct {
 
 func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	allProblems := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
-	var finishedIds = make([]uint, 0)
 	var idToProblem = make(map[uint]domain.Problem)
-	for _, p := range allProblems {
-		if p.IsContestFinished() {
-			finishedIds = append(finishedIds, p.ID)
-			idToProblem[p.ID] = p
-		}
+	var idToPosition = make(map[uint]int)
+	for i, p := range allProblems {
+		idToProblem[p.ID] = p
+		idToPosition[p.ID] = i
 	}
-	sort.Slice(finishedIds, func(i, j int) bool { return finishedIds[i] < finishedIds[j] })
-	var album = make([]domain.ProblemStatsApp, len(finishedIds))
-	var position = make(map[uint]int)
-	for i, problemId := range finishedIds {
-		position[problemId] = i
-		album[i].ProblemId = problemId
+	var album = make([]domain.ProblemStatsApp, len(allProblems))
+	for i, problem := range allProblems {
+		album[i].ProblemId = problem.ID
 		album[i].Attempts = 0
 		album[i].Solved = false
 		album[i].SolvedDuringContest = false
+		album[i].IsCurrentProblem = problem.IsCurrentProblem()
 		album[i].Tags = make([]string, 0)
-		album[i].Series = idToProblem[problemId].Series
-		album[i].NumberInSeries = idToProblem[problemId].NumberInSeries
+		album[i].Series = idToProblem[problem.ID].Series
+		album[i].NumberInSeries = problem.NumberInSeries
 	}
 	userAttempts := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserId(userId)
 	for _, userAttempt := range userAttempts {
-		if i, ok := position[userAttempt.ProblemId]; ok {
+		if i, ok := idToPosition[userAttempt.ProblemId]; ok {
+			problem := idToProblem[userAttempt.ProblemId]
+			isCurrent := problem.IsCurrentProblem()
 			album[i].Attempts++
-			if userAttempt.IsCorrect {
+			if (!isCurrent) && userAttempt.IsCorrect {
 				album[i].Solved = true
 				if userAttempt.DuringContest {
 					album[i].SolvedDuringContest = true
@@ -72,7 +69,7 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	}
 	tags := crud.NewDatabaseProblemTagRepo(s.database).GetAllTags()
 	for _, tag := range tags {
-		if i, ok := position[tag.ProblemId]; ok {
+		if i, ok := idToPosition[tag.ProblemId]; ok {
 			album[i].Tags = append(album[i].Tags, tag.Tag)
 		}
 	}

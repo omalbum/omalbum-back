@@ -100,6 +100,7 @@ type ProblemStatsApp struct {
 	Attempts            uint      `json:"attempts"`
 	Solved              bool      `json:"solved"`
 	SolvedDuringContest bool      `json:"solved_during_contest"`
+	IsCurrentProblem    bool      `json:"is_current_problem"`
 	DateSolved          time.Time `json:"date_solved"`
 	Series              string    `json:"series"`
 	NumberInSeries      uint      `json:"number_in_series"`
@@ -191,8 +192,8 @@ type SchoolsApp struct {
 	Problems []SchoolApp `json:"schools"`
 }
 type SchoolApp struct {
-	Name        string `json:"name"`
-	Province    string `json:"province"`
-	Department  string `json:"department"`
-	Location    string `json:"location"`
+	Name       string `json:"name"`
+	Province   string `json:"province"`
+	Department string `json:"department"`
+	Location   string `json:"location"`
 }

@@ -26,6 +26,6 @@ func (u *schoolController) GetSchools(context *gin.Context) {
 	searchText := params.GetSearchText(context)
 	province := params.GetProvince(context)
 	department := params.GetDepartment(context)
-	schoolsApp := schools.NewService(u.database).GetSchools(searchText, province , department)
+	schoolsApp := schools.NewService(u.database).GetSchools(searchText, province, department)
 	context.JSON(http.StatusOK, schoolsApp)
 }

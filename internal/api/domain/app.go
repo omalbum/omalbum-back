@@ -200,3 +200,7 @@ type SchoolApp struct {
 	Department string `json:"department"`
 	Location   string `json:"location"`
 }
+
+type UserIdWrappedApp struct {
+	UserId uint `json:"user_id"`
+}

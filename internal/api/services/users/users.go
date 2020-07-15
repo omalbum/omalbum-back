@@ -188,6 +188,12 @@ func (s *service) CreateUser(registrationApp domain.RegistrationApp) (*domain.Us
 	}
 	err := userRepo.Create(&user)
 
+	if err == nil {
+		// Send the mail in a non-blocking way
+		// registrationJob := mailer.NewRegistrationJob(r.mailer, registrationApp.Email, registrationApp.Name)
+		// jobrunner.Now(registrationJob)
+	}
+
 	return &user, err
 }
 

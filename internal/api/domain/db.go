@@ -83,3 +83,11 @@ type ExpandedUserProblemAttempt struct {
 	IsCorrect        bool
 	DuringContest    bool
 }
+
+type School struct {
+	gorm.Model
+	Name            string
+	Province        string
+	Department      string
+	Location        string
+}

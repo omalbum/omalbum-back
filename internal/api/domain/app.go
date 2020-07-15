@@ -32,6 +32,7 @@ type RegistrationApp struct {
 	Email      string `json:"email"`
 	Gender     string `json:"gender"`
 	IsStudent  bool   `json:"is_student"`
+	IsTeacher  bool   `json:"is_teacher"`
 	SchoolYear uint   `json:"school_year"`
 	Country    string `json:"country"`
 	Province   string `json:"province"`
@@ -49,6 +50,7 @@ type UpdateProfileApp struct {
 	Email      string `json:"email"`
 	Gender     string `json:"gender"`
 	IsStudent  bool   `json:"is_student"`
+	IsTeacher  bool   `json:"is_teacher"`
 	SchoolYear uint   `json:"school_year"`
 	Country    string `json:"country"`
 	Province   string `json:"province"`
@@ -66,6 +68,7 @@ type UserApp struct {
 	BirthDate        time.Time `json:"birth_date"`
 	Gender           string    `json:"gender"`
 	IsStudent        bool      `json:"is_student"`
+	IsTeacher        bool      `json:"is_teacher"`
 	SchoolYear       uint      `json:"school_year"`
 	Country          string    `json:"country"`
 	Province         string    `json:"province"`

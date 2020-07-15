@@ -24,6 +24,7 @@ type User struct {
 	Location         string
 	School           string
 	IsStudent        bool
+	IsTeacher        bool
 	SchoolYear       uint
 	RegistrationDate time.Time
 	LastActiveDate   time.Time

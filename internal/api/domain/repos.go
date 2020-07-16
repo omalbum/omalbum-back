@@ -28,7 +28,7 @@ type ProblemRepo interface {
 
 type UserProblemAttemptRepo interface {
 	Create(userProblemAttempt *UserProblemAttempt) error
-	GetByProblemId(problemId uint, userId uint) []UserProblemAttempt
+	GetByProblemIdAndUserId(problemId uint, userId uint) []UserProblemAttempt
 }
 
 type UserActionRepo interface {

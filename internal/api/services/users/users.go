@@ -130,7 +130,7 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	repo := crud.NewDatabaseUserProblemAttemptRepo(s.database)
 	var err error
 	isContest := problem.IsCurrentProblem()
-	if isContest && len(repo.GetByProblemId(problem.ID, userID)) > 0 {
+	if isContest && len(repo.GetByProblemIdAndUserId(problem.ID, userID)) > 0 {
 		return nil, messages.NewForbidden("problem_already_attempted_during_contest", "problem already attempted during contest")
 	}
 	err = repo.Create(&attempt)

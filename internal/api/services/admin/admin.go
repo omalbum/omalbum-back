@@ -12,7 +12,7 @@ type Service interface {
 	GetAllProblems() domain.AllProblemsAdminApp
 	GetProblem(problemId uint) (domain.ProblemAdminApp, error)
 	CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error)
-	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.Problem, error)
+	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.ProblemAdminApp, error)
 	DeleteProblem(problemId uint) error
 }
 
@@ -89,7 +89,7 @@ func (s *service) CreateProblem(poserId uint, newProblem domain.ProblemAdminApp)
 	return &problem, nil
 }
 
-func (s *service) UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.Problem, error) {
+func (s *service) UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.ProblemAdminApp, error) {
 	problemRepo := crud.NewDatabaseProblemRepo(s.database)
 	err := updatedProblem.Validate()
 	if err != nil {
@@ -104,7 +104,8 @@ func (s *service) UpdateProblem(problemId uint, updatedProblem domain.ProblemAdm
 	problemTagRepo := crud.NewDatabaseProblemTagRepo(s.database)
 	problemTagRepo.DeleteAllTagsByProblemId(problemId)
 	problemTagRepo.CreateByProblemIdAndTags(problemId, updatedProblem.Tags)
-	return &problem, nil
+	updateProblemAdminApp := problemToProblemAdminApp(problem)
+	return &updateProblemAdminApp, nil
 }
 
 func problemAdminAppToProblem(newProblem domain.ProblemAdminApp) domain.Problem {

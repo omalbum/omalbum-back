@@ -70,12 +70,12 @@ func (a *adminController) PutProblem(context *gin.Context) {
 	var updatedProblem domain.ProblemAdminApp
 	_ = context.Bind(&updatedProblem)
 	problemId := params.GetProblemID(context)
-	_, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)
+	updatedProblemObject, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{})
+	context.JSON(http.StatusOK, updatedProblemObject)
 }
 
 func (a *adminController) DeleteProblem(context *gin.Context) {

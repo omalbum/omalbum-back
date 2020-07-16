@@ -19,12 +19,12 @@ func (dr *databaseUserProblemAttemptRepo) Create(attempt *domain.UserProblemAtte
 	return dr.database.DB.Create(attempt).Error
 }
 
-func (dr *databaseUserProblemAttemptRepo) GetByProblemId(problemId uint) []domain.UserProblemAttempt {
+func (dr *databaseUserProblemAttemptRepo) GetByProblemId(problemId uint, userId uint) []domain.UserProblemAttempt {
 	if problemId == 0 {
 		return nil //needed to avoid an empty condition in Where
 	}
 	var attempts []domain.UserProblemAttempt
-	dr.database.DB.Where("problem_id = ?", problemId).Find(&attempts)
+	dr.database.DB.Where("problem_id = ? AND user_id = ?", problemId, userId).Find(&attempts)
 	return attempts
 
 }

@@ -98,7 +98,7 @@ func (s *service) GetProblemAttemptsByUser(userId uint, problemId uint) (*domain
 	}
 	for i, userAttempt := range userAttemptsInProblem {
 		attempts.Attempts++
-		attempts.AttemptList[i].GivenAnswer = userAttempt.Answer
+		attempts.AttemptList[i].GivenAnswer = userAttempt.UserAnswer
 		attempts.AttemptList[i].AttemptDate = userAttempt.AttemptDate
 		attempts.AttemptList[i].Result = getResult(problem.Answer, userAttempt.UserAnswer, isCurrent)
 		if userAttempt.IsCorrect && !isCurrent {
@@ -132,7 +132,7 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	repo := crud.NewDatabaseUserProblemAttemptRepo(s.database)
 	var err error
 	isContest := problem.IsCurrentProblem()
-	if isContest && len(repo.GetByProblemId(problem.ID)) > 0 {
+	if isContest && len(repo.GetByProblemId(problem.ID, userID)) > 0 {
 		return nil, messages.NewForbidden("problem_already_attempted_during_contest", "problem already attempted during contest")
 	}
 	err = repo.Create(&attempt)

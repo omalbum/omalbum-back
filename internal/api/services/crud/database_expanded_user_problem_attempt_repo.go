@@ -27,6 +27,15 @@ func (d databaseExpandedUserProblemAttemptRepo) GetByUserIdAndProblemId(userId u
 	return attempts
 }
 
+func (d databaseExpandedUserProblemAttemptRepo) GetAllByProblem(problemId uint) []domain.ExpandedUserProblemAttempt {
+	if problemId == 0 {
+		return nil //needed to avoid an empty condition in Where
+	}
+	var attempts []domain.ExpandedUserProblemAttempt
+	d.database.DB.Where("problem_id = ? ", problemId).Find(&attempts)
+	return attempts
+}
+
 func NewExpandedUserProblemAttemptRepo(database *db.Database) domain.ExpandedUserProblemAttemptRepo {
 	return &databaseExpandedUserProblemAttemptRepo{
 		database: database,

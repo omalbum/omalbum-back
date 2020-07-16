@@ -11,6 +11,7 @@ import (
 type Service interface {
 	GetAllProblems() domain.AllProblemsAdminApp
 	GetProblem(problemId uint) (domain.ProblemAdminApp, error)
+	GetAllProblemAttempts(problemId uint) []domain.ExpandedUserProblemAttempt
 	CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error)
 	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.ProblemAdminApp, error)
 	DeleteProblem(problemId uint) error
@@ -56,6 +57,11 @@ func (s *service) GetProblem(problemId uint) (domain.ProblemAdminApp, error) {
 	}
 	problemAdminApp.Tags = tags
 	return problemAdminApp, nil
+}
+
+func (s *service) GetAllProblemAttempts(problemId uint) []domain.ExpandedUserProblemAttempt {
+	attempts := crud.NewExpandedUserProblemAttemptRepo(s.database).GetAllByProblem(problemId)
+	return attempts
 }
 
 func (s *service) DeleteProblem(problemId uint) error {

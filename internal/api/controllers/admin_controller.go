@@ -18,6 +18,7 @@ type AdminController interface {
 	PutProblem(context *gin.Context)
 	DeleteProblem(context *gin.Context)
 	GetAllProblems(context *gin.Context)
+	GetAllProblemsStats(context *gin.Context)
 }
 
 type adminController struct {
@@ -38,6 +39,31 @@ func NewAdminController(database *db.Database, manager permissions.Manager) Admi
 func (a *adminController) GetAllProblems(context *gin.Context) {
 	problems := admin.NewService(a.database).GetAllProblems()
 	context.JSON(http.StatusOK, problems)
+}
+
+func (a *adminController) GetAllProblemsStats(context *gin.Context) {
+	problems := admin.NewService(a.database).GetAllProblems()
+	var problemAdminStats = make([]domain.ProblemAdminStatsApp, len(problems.Problems))
+	for i, problem := range problems.Problems {
+		allAttempts := admin.NewService(a.database).GetAllProblemAttempts(problem.ProblemId)
+		problemAdminStats[i].ProblemId = problem.ProblemId
+		problemAdminStats[i].NumberInSeries = problem.NumberInSeries
+		problemAdminStats[i].IsCurrentProblem = problem.IsCurrentProblemAdminApp()
+		problemAdminStats[i].Tags = problem.Tags
+		setUsers := make(map[uint]bool)
+		for _, attempt := range allAttempts {
+			problemAdminStats[i].Attempts++
+			if attempt.IsCorrect {
+				problemAdminStats[i].SolvedCount++
+				setUsers[attempt.UserId] = true
+				if attempt.DuringContest {
+					problemAdminStats[i].SolvedDuringContestCount++
+				}
+			}
+		}
+		problemAdminStats[i].SolvedDistinctCount = len(setUsers)
+	}
+	context.JSON(http.StatusOK, problemAdminStats)
 }
 
 func (a *adminController) GetProblem(context *gin.Context) {

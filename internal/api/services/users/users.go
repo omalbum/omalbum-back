@@ -259,13 +259,14 @@ func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.Registrat
 
 func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error) {
 	userRepo := crud.NewDatabaseUserRepo(s.database)
-	panic("implement me!") // actualizar esto de acuerdo a docu del API
+	// panic("implement me!") // actualizar esto de acuerdo a docu del API
 	user := domain.User{
 		Model:    gorm.Model{ID: userId},
-		UserName: strings.ToLower(updatedProfile.UserName),
 		Name:     updatedProfile.Name,
 		LastName: updatedProfile.LastName,
 		Email:    strings.ToLower(updatedProfile.Email),
+		Country:  strings.ToLower(updatedProfile.Country),
+		Gender:   strings.ToLower(updatedProfile.Gender),
 	}
 	err := userRepo.Update(&user)
 	return &user, err

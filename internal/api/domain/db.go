@@ -24,6 +24,7 @@ type User struct {
 	Location         string
 	School           string
 	IsStudent        bool
+	IsTeacher        bool
 	SchoolYear       uint
 	RegistrationDate time.Time
 	LastActiveDate   time.Time
@@ -47,12 +48,12 @@ type Problem struct {
 	DateUploaded     time.Time
 	DateContestStart time.Time
 	DateContestEnd   time.Time
-	Statement        string
+	Statement        string `gorm:"type:longtext;unique_index"`
 	Answer           int
-	Annotations      string
+	Annotations      string `gorm:"type:longtext;unique_index"`
 	IsDraft          bool
-	Hint             string
-	OfficialSolution string
+	Hint             string `gorm:"type:longtext;unique_index"`
+	OfficialSolution string `gorm:"type:longtext;unique_index"`
 	Series           string
 	NumberInSeries   uint
 }
@@ -86,8 +87,8 @@ type ExpandedUserProblemAttempt struct {
 
 type School struct {
 	gorm.Model
-	Name            string
-	Province        string
-	Department      string
-	Location        string
+	Name       string
+	Province   string
+	Department string
+	Location   string
 }

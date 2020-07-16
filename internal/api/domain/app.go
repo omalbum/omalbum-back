@@ -32,6 +32,7 @@ type RegistrationApp struct {
 	Email      string `json:"email"`
 	Gender     string `json:"gender"`
 	IsStudent  bool   `json:"is_student"`
+	IsTeacher  bool   `json:"is_teacher"`
 	SchoolYear uint   `json:"school_year"`
 	Country    string `json:"country"`
 	Province   string `json:"province"`
@@ -49,6 +50,7 @@ type UpdateProfileApp struct {
 	Email      string `json:"email"`
 	Gender     string `json:"gender"`
 	IsStudent  bool   `json:"is_student"`
+	IsTeacher  bool   `json:"is_teacher"`
 	SchoolYear uint   `json:"school_year"`
 	Country    string `json:"country"`
 	Province   string `json:"province"`
@@ -66,6 +68,7 @@ type UserApp struct {
 	BirthDate        time.Time `json:"birth_date"`
 	Gender           string    `json:"gender"`
 	IsStudent        bool      `json:"is_student"`
+	IsTeacher        bool      `json:"is_teacher"`
 	SchoolYear       uint      `json:"school_year"`
 	Country          string    `json:"country"`
 	Province         string    `json:"province"`
@@ -100,6 +103,7 @@ type ProblemStatsApp struct {
 	Attempts            uint      `json:"attempts"`
 	Solved              bool      `json:"solved"`
 	SolvedDuringContest bool      `json:"solved_during_contest"`
+	IsCurrentProblem    bool      `json:"is_current_problem"`
 	DateSolved          time.Time `json:"date_solved"`
 	Series              string    `json:"series"`
 	NumberInSeries      uint      `json:"number_in_series"`
@@ -191,8 +195,12 @@ type SchoolsApp struct {
 	Problems []SchoolApp `json:"schools"`
 }
 type SchoolApp struct {
-	Name        string `json:"name"`
-	Province    string `json:"province"`
-	Department  string `json:"department"`
-	Location    string `json:"location"`
+	Name       string `json:"name"`
+	Province   string `json:"province"`
+	Department string `json:"department"`
+	Location   string `json:"location"`
+}
+
+type UserIdWrappedApp struct {
+	UserId uint `json:"user_id"`
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/users"
+	"github.com/miguelsotocarlos/teleoma/internal/api/services/register"
 	"net/http"
 )
 
@@ -16,49 +16,31 @@ type RegisterController interface {
 }
 
 type registerController struct {
-	database *db.Database
-	mailer   mailer.Mailer
-	logger   crud.Logger
+	registerService register.Service
+	logger          crud.Logger
 }
 
 func NewRegisterController(database *db.Database, mailer mailer.Mailer) RegisterController {
 	return &registerController{
-		database: database,
-		mailer:   mailer,
-		logger:   crud.NewLogger(database),
+		registerService: register.NewService(database, mailer),
+		logger:          crud.NewLogger(database),
 	}
 }
 
 func (r *registerController) Register(context *gin.Context) {
 	var registrationApp domain.RegistrationApp
-	var err = context.Bind(&registrationApp)
-
+	err := context.Bind(&registrationApp)
 	if err != nil {
-		r.logger.LogAnonymousAction("registration failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
+		_ = r.logger.LogAnonymousAction("cannot_bind", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}
-
-	err = registrationApp.Validate()
-
+	u, err := r.registerService.CreateUser(registrationApp)
 	if err != nil {
-		r.logger.LogAnonymousAction("registration failed: validation error", http.StatusBadRequest, context.Request.Method, context.Request.URL.String())
-		context.JSON(http.StatusBadRequest, messages.NewValidation(err))
+		_ = r.logger.LogAnonymousAction(err.(messages.Message).Code, messages.GetHttpCode(err), context.Request.Method, context.Request.URL.String())
+		context.JSON(messages.GetHttpCode(err), err)
 		return
 	}
-
-	// Create User
-	user, err := users.NewService(r.database, r.mailer).CreateUser(registrationApp)
-	if err != nil {
-		r.logger.LogAnonymousAction("registration failed: user already exists", http.StatusConflict, context.Request.Method, context.Request.URL.String())
-		context.JSON(http.StatusConflict, messages.New("user_already_exists", "user already exists"))
-		return
-	}
-
-	// Send the mail in a non-blocking way
-	// comento porque por ahora no usamos esto
-	// registrationJob := mailer.NewRegistrationJob(r.mailer, registrationApp.Email, registrationApp.Name)
-	// jobrunner.Now(registrationJob)
-	r.logger.LogUserAction(user.ID, "user registered", http.StatusCreated, context.Request.Method, context.Request.URL.String())
-	context.JSON(http.StatusCreated, gin.H{"user_id": user.ID})
+	_ = r.logger.LogUserAction(u.UserId, "user_registered", http.StatusCreated, context.Request.Method, context.Request.URL.String())
+	context.JSON(http.StatusCreated, u)
 }

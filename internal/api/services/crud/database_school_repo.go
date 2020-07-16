@@ -33,4 +33,3 @@ func (dr *databaseSchoolRepo) GetSchools(searchText string, province string, dep
 func (dr *databaseSchoolRepo) Create(school *domain.School) error {
 	return dr.database.DB.Create(school).Error
 }
-

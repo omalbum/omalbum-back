@@ -9,7 +9,6 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
 	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
-	"sort"
 	"strings"
 	"time"
 )
@@ -22,6 +21,7 @@ type Service interface {
 	UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error)
 	ChangePassword(userID uint, newPassword string) error
 	ResetPassword(email string) error
+	UpdateLastActiveDate(userID uint)
 	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
 	GetAlbum(userId uint) (*domain.AlbumApp, error)
 	GetProblemAttemptsByUser(userId uint, problemId uint) (*domain.ProblemAttemptsByUserApp, error)
@@ -34,32 +34,30 @@ type service struct {
 
 func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	allProblems := crud.NewDatabaseProblemRepo(s.database).GetAllProblems()
-	var finishedIds = make([]uint, 0)
 	var idToProblem = make(map[uint]domain.Problem)
-	for _, p := range allProblems {
-		if p.IsContestFinished() {
-			finishedIds = append(finishedIds, p.ID)
-			idToProblem[p.ID] = p
-		}
+	var idToPosition = make(map[uint]int)
+	for i, p := range allProblems {
+		idToProblem[p.ID] = p
+		idToPosition[p.ID] = i
 	}
-	sort.Slice(finishedIds, func(i, j int) bool { return finishedIds[i] < finishedIds[j] })
-	var album = make([]domain.ProblemStatsApp, len(finishedIds))
-	var position = make(map[uint]int)
-	for i, problemId := range finishedIds {
-		position[problemId] = i
-		album[i].ProblemId = problemId
+	var album = make([]domain.ProblemStatsApp, len(allProblems))
+	for i, problem := range allProblems {
+		album[i].ProblemId = problem.ID
 		album[i].Attempts = 0
 		album[i].Solved = false
 		album[i].SolvedDuringContest = false
+		album[i].IsCurrentProblem = problem.IsCurrentProblem()
 		album[i].Tags = make([]string, 0)
-		album[i].Series = idToProblem[problemId].Series
-		album[i].NumberInSeries = idToProblem[problemId].NumberInSeries
+		album[i].Series = idToProblem[problem.ID].Series
+		album[i].NumberInSeries = problem.NumberInSeries
 	}
 	userAttempts := crud.NewExpandedUserProblemAttemptRepo(s.database).GetByUserId(userId)
 	for _, userAttempt := range userAttempts {
-		if i, ok := position[userAttempt.ProblemId]; ok {
+		if i, ok := idToPosition[userAttempt.ProblemId]; ok {
+			problem := idToProblem[userAttempt.ProblemId]
+			isCurrent := problem.IsCurrentProblem()
 			album[i].Attempts++
-			if userAttempt.IsCorrect {
+			if (!isCurrent) && userAttempt.IsCorrect {
 				album[i].Solved = true
 				if userAttempt.DuringContest {
 					album[i].SolvedDuringContest = true
@@ -72,7 +70,7 @@ func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
 	}
 	tags := crud.NewDatabaseProblemTagRepo(s.database).GetAllTags()
 	for _, tag := range tags {
-		if i, ok := position[tag.ProblemId]; ok {
+		if i, ok := idToPosition[tag.ProblemId]; ok {
 			album[i].Tags = append(album[i].Tags, tag.Tag)
 		}
 	}
@@ -178,6 +176,7 @@ func (s *service) CreateUser(registrationApp domain.RegistrationApp) (*domain.Us
 		Email:            strings.ToLower(registrationApp.Email),
 		Gender:           registrationApp.Gender,
 		IsStudent:        registrationApp.IsStudent,
+		IsTeacher:        registrationApp.IsTeacher,
 		SchoolYear:       registrationApp.SchoolYear,
 		Country:          registrationApp.Country,
 		Province:         registrationApp.Province,
@@ -188,6 +187,12 @@ func (s *service) CreateUser(registrationApp domain.RegistrationApp) (*domain.Us
 		LastActiveDate:   time.Now(),
 	}
 	err := userRepo.Create(&user)
+
+	if err == nil {
+		// Send the mail in a non-blocking way
+		// registrationJob := mailer.NewRegistrationJob(r.mailer, registrationApp.Email, registrationApp.Name)
+		// jobrunner.Now(registrationJob)
+	}
 
 	return &user, err
 }
@@ -215,6 +220,7 @@ func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
 		BirthDate:        user.BirthDate,
 		Gender:           user.Gender,
 		IsStudent:        user.IsStudent,
+		IsTeacher:        user.IsTeacher,
 		SchoolYear:       user.SchoolYear,
 		Country:          user.Country,
 		Province:         user.Province,
@@ -297,4 +303,8 @@ func (s *service) ResetPassword(email string) error {
 	jobrunner.Now(resetPasswordJob)
 
 	return nil
+}
+
+func (s *service) UpdateLastActiveDate(userID uint) {
+	_ = crud.NewDatabaseUserRepo(s.database).Update(&domain.User{Model: gorm.Model{ID: userID}, LastActiveDate: time.Now()})
 }

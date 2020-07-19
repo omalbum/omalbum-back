@@ -76,7 +76,7 @@ func TestServiceChangePassword(t *testing.T) {
 	}
 	_ = userRepo.Create(&aCook)
 	_ = userRepo.Create(&anotherCook)
-	NewService(database, mailer.NewMock()).ChangePassword(aCook.ID, "chocotorta")
+	NewService(database, mailer.NewMock()).ChangePassword(aCook.ID, "pastafrola", "chocotorta")
 	aCook = *userRepo.GetByID(aCook.ID)
 	assert.True(t, crypto.IsHashedPasswordEqualWithPlainPassword(aCook.HashedPassword, "chocotorta"))
 	anotherCook = *userRepo.GetByID(anotherCook.ID)

@@ -19,7 +19,8 @@ type Service interface {
 	GetByUser(user *domain.User) (*domain.UserApp, error)
 	UpdateUserProfile(userID uint, user domain.RegistrationApp) error
 	UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error)
-	ChangePassword(userID uint, newPassword string) error
+	ChangePassword(userID uint, oldPassword string, newPassword string) error
+	ChangePasswordNoChecks(userID uint, newPassword string) error
 	ResetPassword(email string) error
 	UpdateLastActiveDate(userID uint)
 	PostAnswer(userID uint, attempt domain.ProblemAttemptApp) (*domain.AttemptResultApp, error)
@@ -30,6 +31,14 @@ type Service interface {
 type service struct {
 	database *db.Database
 	mailer   mailer.Mailer
+}
+
+func (s *service) ChangePasswordNoChecks(userID uint, newPassword string) error {
+	user := &domain.User{
+		Model:          gorm.Model{ID: userID},
+		HashedPassword: crypto.HashAndSalt(newPassword),
+	}
+	return crud.NewDatabaseUserRepo(s.database).Update(user)
 }
 
 func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {
@@ -130,7 +139,7 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	repo := crud.NewDatabaseUserProblemAttemptRepo(s.database)
 	var err error
 	isContest := problem.IsCurrentProblem()
-	if isContest && len(repo.GetByProblemId(problem.ID, userID)) > 0 {
+	if isContest && len(repo.GetByProblemIdAndUserId(problem.ID, userID)) > 0 {
 		return nil, messages.NewForbidden("problem_already_attempted_during_contest", "problem already attempted during contest")
 	}
 	err = repo.Create(&attempt)
@@ -280,15 +289,14 @@ func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp
 	return &user, err
 }
 
-func (s *service) ChangePassword(userID uint, newPassword string) error {
+func (s *service) ChangePassword(userID uint, oldPassword string, newPassword string) error {
 	// sets the new password for the user
 	userRepo := crud.NewDatabaseUserRepo(s.database)
-	user := domain.User{
-		Model:          gorm.Model{ID: userID},
-		HashedPassword: crypto.HashAndSalt(newPassword),
+	user := userRepo.GetByID(userID)
+	if !crypto.IsHashedPasswordEqualWithPlainPassword(user.HashedPassword, oldPassword) {
+		return messages.NewForbidden("incorrect_old_password", "incorrect old password")
 	}
-	err := userRepo.Update(&user)
-	return err
+	return s.ChangePasswordNoChecks(userID, newPassword)
 }
 
 func (s *service) ResetPassword(email string) error {
@@ -303,7 +311,7 @@ func (s *service) ResetPassword(email string) error {
 	}
 	userId := u.ID
 	newPassword, _ := crypto.GenerateRandomString(8)
-	err := s.ChangePassword(userId, newPassword)
+	err := s.ChangePasswordNoChecks(userId, newPassword)
 	if err != nil {
 		return err
 	}

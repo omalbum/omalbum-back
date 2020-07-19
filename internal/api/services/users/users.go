@@ -246,10 +246,10 @@ func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.Registrat
 	if u == nil {
 		return messages.NewNotFound("user_not_found", "user not found")
 	}
-	if userRepo.GetByUserName(updatedProfile.UserName) != nil {
+	if userRepo.GetByUserName(updatedProfile.UserName) != nil && u.UserName != updatedProfile.UserName {
 		return messages.NewConflict("username_already_taken", "username already taken")
 	}
-	if userRepo.GetByEmail(updatedProfile.Email) != nil {
+	if userRepo.GetByEmail(updatedProfile.Email) != nil && u.Email != updatedProfile.Email {
 		return messages.NewConflict("email_already_taken", "email already taken")
 	}
 

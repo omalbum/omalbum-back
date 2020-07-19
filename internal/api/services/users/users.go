@@ -296,6 +296,10 @@ func (s *service) ChangePassword(userID uint, oldPassword string, newPassword st
 	if !crypto.IsHashedPasswordEqualWithPlainPassword(user.HashedPassword, oldPassword) {
 		return messages.NewForbidden("incorrect_old_password", "incorrect old password")
 	}
+	err := domain.ValidatePassword(newPassword)
+	if err != nil {
+		return err
+	}
 	return s.ChangePasswordNoChecks(userID, newPassword)
 }
 

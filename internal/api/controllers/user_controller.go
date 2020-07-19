@@ -74,14 +74,13 @@ func (u *userController) PutUser(context *gin.Context) {
 		return
 	}
 	userService := users.NewService(u.database, u.mailer)
-	err = userService.UpdateUserProfile(userID, updatedProfile)
+	user, err := userService.UpdateUserProfile(userID, updatedProfile)
 
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return
 	}
-	userApp, _ := userService.GetByUserID(userID)
-	context.JSON(http.StatusOK, userApp)
+	context.JSON(http.StatusOK, user)
 }
 
 func (u *userController) PutPassword(context *gin.Context) {

@@ -8,7 +8,7 @@ type UserRepo interface {
 	GetByEmail(email string) *User
 	GetAll() []User
 	Create(user *User) error
-	Update(user *User) error // updates a specific row, user must have ID setted
+	Update(user *User) error // updates a specific row, user must have ID setted. Pisa lo que haya!
 	Delete(userId uint) error
 }
 

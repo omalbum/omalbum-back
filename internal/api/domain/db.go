@@ -9,23 +9,27 @@ const (
 	AnonymousUser uint = 1
 )
 
+// Si agregamos algun campo a este struct hay que tener mucho cuidado
+// de no pisarlo con null en el endpoint de Update user!
 type User struct {
 	gorm.Model
-	UserName         string `gorm:"unique;size:20"`
-	HashedPassword   string
-	Email            string `gorm:"unique;"`
-	Name             string
-	LastName         string
-	BirthDate        time.Time
-	Gender           string
-	Country          string
-	Province         string
-	Department       string
-	Location         string
-	School           string
-	IsStudent        bool
-	IsTeacher        bool
-	SchoolYear       uint
+	// campos de registro de usuario
+	UserName       string `gorm:"unique;size:20"`
+	HashedPassword string
+	Email          string `gorm:"unique;"`
+	Name           string
+	LastName       string
+	BirthDate      time.Time
+	Gender         string
+	Country        string
+	Province       string
+	Department     string
+	Location       string
+	School         string
+	IsStudent      bool
+	IsTeacher      bool
+	SchoolYear     uint
+	// campos que se llenan de otra forma
 	RegistrationDate time.Time
 	LastActiveDate   time.Time
 	IsAdmin          bool

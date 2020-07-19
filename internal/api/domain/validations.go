@@ -14,7 +14,6 @@ func ValidatePassword(password string) error {
 }
 
 func (registration RegistrationApp) Validate() error {
-	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&registration,
 		validation.Field(&registration.UserName, validation.Required, validation.Length(2, 20), is.Alphanumeric),
 		validation.Field(&registration.Password, validation.Required, validation.Length(6, 20)),
@@ -27,7 +26,6 @@ func (registration RegistrationApp) Validate() error {
 
 // validaciones para put de user profile
 func (registration RegistrationApp) ValidateWithoutPassword() error {
-	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&registration,
 		validation.Field(&registration.UserName, validation.Required, validation.Length(2, 20), is.Alphanumeric),
 		validation.Field(&registration.Name, validation.Required),
@@ -38,7 +36,6 @@ func (registration RegistrationApp) ValidateWithoutPassword() error {
 }
 
 func (newProblem ProblemAdminApp) Validate() error {
-	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&newProblem,
 		validation.Field(&newProblem.Statement, validation.Required),
 		validation.Field(&newProblem.Series, validation.Required),

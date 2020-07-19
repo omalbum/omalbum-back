@@ -40,7 +40,7 @@ func MapURLs(app *Application, router *gin.Engine) {
 		v1.POST("/users/answer", app.AuthMiddleware.MiddlewareFunc(), app.UserController.PostAnswer)
 
 		// Schools endpoints
-		v1.GET("/schools/:province/:department/:search_text", app.SchoolController.GetSchools)
+		//v1.GET("/schools/:province/:department/:search_text", app.SchoolController.GetSchools)
 
 		// Admin endpoints
 		v1.GET("/admin/problems/all/stats", app.AuthMiddleware.MiddlewareFunc(), app.AdminMiddleware.AdminCheck, app.AdminController.GetStats)

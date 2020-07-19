@@ -71,10 +71,7 @@ func (dr *databaseUserRepo) Update(user *domain.User) error {
 	if user.ID == 0 {
 		return messages.New("user_id_must_be_nonzero", "user id must be nonzero")
 	}
-	if dr.database.DB.Model(user).Update(user).RowsAffected == 0 {
-		return messages.New("user_not_found", "user not found")
-	}
-	return nil
+	return dr.database.DB.Save(user).Error
 }
 
 func (dr *databaseUserRepo) Delete(id uint) error {

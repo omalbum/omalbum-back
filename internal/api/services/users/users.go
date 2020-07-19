@@ -17,8 +17,7 @@ type Service interface {
 	CreateUser(registrationApp domain.RegistrationApp) (*domain.User, error)
 	GetByUserID(userID uint) (*domain.UserApp, error)
 	GetByUser(user *domain.User) (*domain.UserApp, error)
-	UpdateUserProfile(userID uint, user domain.RegistrationApp) error
-	UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error)
+	UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) (*domain.User, error)
 	ChangePassword(userID uint, oldPassword string, newPassword string) error
 	ChangePasswordNoChecks(userID uint, newPassword string) error
 	ResetPassword(email string) error
@@ -240,36 +239,28 @@ func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
 		IsAdmin:          user.IsAdmin,
 	}
 }
-func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) error {
+func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) (*domain.User, error) {
+
 	userRepo := crud.NewDatabaseUserRepo(s.database)
 	u := userRepo.GetByID(userID)
 	if u == nil {
-		return messages.NewNotFound("user_not_found", "user not found")
+		return nil, messages.NewNotFound("user_not_found", "user not found")
 	}
 	if userRepo.GetByUserName(updatedProfile.UserName) != nil && u.UserName != updatedProfile.UserName {
-		return messages.NewConflict("username_already_taken", "username already taken")
+		return nil, messages.NewConflict("username_already_taken", "username already taken")
 	}
 	if userRepo.GetByEmail(updatedProfile.Email) != nil && u.Email != updatedProfile.Email {
-		return messages.NewConflict("email_already_taken", "email already taken")
+		return nil, messages.NewConflict("email_already_taken", "email already taken")
 	}
 
 	err := updatedProfile.ValidateWithoutPassword()
 	if err != nil {
-		return messages.NewValidation(err)
-	}
-	_, err = s.UpdateUser(userID, &updatedProfile)
-	if err != nil {
-		return messages.NewConflict("email_already_used", "email already used")
+		return nil, messages.NewValidation(err)
 	}
 
-	return nil
-}
-
-func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error) {
-	userRepo := crud.NewDatabaseUserRepo(s.database)
 	birthDate, _ := time.Parse("2006-01-02", updatedProfile.BirthDate)
 	user := domain.User{
-		Model:      gorm.Model{ID: userId},
+		Model:      gorm.Model{ID: userID},
 		UserName:   strings.ToLower(updatedProfile.UserName),
 		Name:       updatedProfile.Name,
 		LastName:   updatedProfile.LastName,
@@ -285,7 +276,13 @@ func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp
 		Location:   updatedProfile.Location,
 		School:     updatedProfile.School,
 	}
-	err := userRepo.Update(&user)
+	// los datos que estén en el usuario y no se setee aca se pierde !!!!
+	user.IsAdmin = u.IsAdmin
+	user.HashedPassword = u.HashedPassword
+	user.RegistrationDate = u.RegistrationDate
+	user.LastActiveDate = time.Now()
+
+	err = userRepo.Update(&user)
 	return &user, err
 }
 

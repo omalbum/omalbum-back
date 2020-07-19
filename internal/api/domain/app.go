@@ -79,8 +79,9 @@ type UserApp struct {
 	IsAdmin          bool      `json:"is_admin"`
 }
 
-type PasswordWrappedApp struct {
-	Password string `json:"password"`
+type PasswordChangeApp struct {
+	NewPassword string `json:"new_password"`
+	OldPassword string `json:"old_password"`
 }
 
 type EmailWrappedApp struct {

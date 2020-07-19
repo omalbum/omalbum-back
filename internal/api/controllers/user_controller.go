@@ -88,10 +88,13 @@ func (u *userController) PutPassword(context *gin.Context) {
 		context.JSON(http.StatusForbidden, gin.H{})
 		return
 	}
-	var newPassword domain.PasswordWrappedApp
-	_ = context.Bind(&newPassword)
-
-	err := users.NewService(u.database, u.mailer).ChangePassword(userID, newPassword.Password)
+	var passwordChangePayload domain.PasswordChangeApp
+	err := context.Bind(&passwordChangePayload)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
+	err = users.NewService(u.database, u.mailer).ChangePassword(userID, passwordChangePayload.OldPassword, passwordChangePayload.NewPassword)
 
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)

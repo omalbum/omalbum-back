@@ -18,6 +18,7 @@ type AdminController interface {
 	PutProblem(context *gin.Context)
 	DeleteProblem(context *gin.Context)
 	GetAllProblems(context *gin.Context)
+	GetStats(context *gin.Context)
 }
 
 type adminController struct {
@@ -38,6 +39,10 @@ func NewAdminController(database *db.Database, manager permissions.Manager) Admi
 func (a *adminController) GetAllProblems(context *gin.Context) {
 	problems := admin.NewService(a.database).GetAllProblems()
 	context.JSON(http.StatusOK, problems)
+}
+
+func (a *adminController) GetStats(context *gin.Context) {
+	context.JSON(http.StatusOK, admin.NewService(a.database).GetStats())
 }
 
 func (a *adminController) GetProblem(context *gin.Context) {
@@ -68,14 +73,18 @@ func (a *adminController) PostProblem(context *gin.Context) {
 
 func (a *adminController) PutProblem(context *gin.Context) {
 	var updatedProblem domain.ProblemAdminApp
-	_ = context.Bind(&updatedProblem)
+	err := context.Bind(&updatedProblem)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
 	problemId := params.GetProblemID(context)
-	_, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)
+	updatedProblemObject, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{})
+	context.JSON(http.StatusOK, updatedProblemObject)
 }
 
 func (a *adminController) DeleteProblem(context *gin.Context) {

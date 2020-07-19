@@ -18,6 +18,14 @@ func (problem *Problem) IsCurrentProblem() bool {
 	return true
 }
 
+func (problemAdminApp *ProblemAdminApp) IsCurrentProblemAdminApp() bool {
+	now := time.Now()
+	if problemAdminApp.IsDraft || now.Before(problemAdminApp.ReleaseDate) || problemAdminApp.Deadline.Before(now) {
+		return false
+	}
+	return true
+}
+
 func (problem *Problem) IsContestFinished() bool {
 	now := time.Now()
 	if problem.IsDraft || now.Before(problem.DateContestEnd) {

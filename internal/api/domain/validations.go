@@ -9,6 +9,10 @@ func ValidateEmail(email string) error {
 	return validation.Validate(email, is.Email)
 }
 
+func ValidatePassword(password string) error {
+	return validation.Validate(password, validation.Length(6, 20))
+}
+
 func (registration RegistrationApp) Validate() error {
 	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&registration,
@@ -26,11 +30,12 @@ func (registration RegistrationApp) Validate() error {
 func (registration RegistrationApp) ValidateWithoutPassword() error {
 	//  TODO completar de acuerdo a docu API
 	return validation.ValidateStruct(&registration,
-		validation.Field(&registration.Name, validation.Required, validation.NilOrNotEmpty),
-		validation.Field(&registration.LastName, validation.Required, validation.NilOrNotEmpty),
-		validation.Field(&registration.Email, validation.Required, is.Email, validation.NilOrNotEmpty),
-		validation.Field(&registration.Gender, validation.Required, validation.NilOrNotEmpty),
-		validation.Field(&registration.Country, validation.Required, validation.NilOrNotEmpty),
+		validation.Field(&registration.UserName, validation.Required, validation.Length(2, 20), is.Alphanumeric),
+		validation.Field(&registration.Name, validation.Required),
+		validation.Field(&registration.LastName, validation.Required),
+		validation.Field(&registration.Email, validation.Required, is.Email),
+		validation.Field(&registration.Gender, validation.Required),
+		validation.Field(&registration.Country, validation.Required),
 	)
 }
 

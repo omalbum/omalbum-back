@@ -232,25 +232,24 @@ func (s *service) buildUserApp(user *domain.User) *domain.UserApp {
 	}
 }
 func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.RegistrationApp) error {
-	currentProfile, err := s.GetByUserID(userID)
-
-	if err != nil {
-		return err
+	userRepo := crud.NewDatabaseUserRepo(s.database)
+	u := userRepo.GetByID(userID)
+	if u == nil {
+		return messages.NewNotFound("user_not_found", "user not found")
+	}
+	if userRepo.GetByUserName(updatedProfile.UserName) != nil {
+		return messages.NewConflict("username_already_taken", "username already taken")
+	}
+	if userRepo.GetByEmail(updatedProfile.Email) != nil {
+		return messages.NewConflict("email_already_taken", "email already taken")
 	}
 
-	updatedProfile.UserName = currentProfile.UserName // this cannot be changed
-
-	err = updatedProfile.ValidateWithoutPassword()
+	err := updatedProfile.ValidateWithoutPassword()
 	if err != nil {
-		//updatedProfile.Password = ""
-		//logger.LogUserAction(userID,"update profile failed: validation error",http.StatusBadRequest, "PUT", "")
 		return messages.NewValidation(err)
 	}
-
-	// Update User and address
 	_, err = s.UpdateUser(userID, &updatedProfile)
 	if err != nil {
-		//logger.LogAnonymousAction("update profile failed: repeated email", updatedProfile)
 		return messages.NewConflict("email_already_used", "email already used")
 	}
 
@@ -259,14 +258,23 @@ func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.Registrat
 
 func (s *service) UpdateUser(userId uint, updatedProfile *domain.RegistrationApp) (*domain.User, error) {
 	userRepo := crud.NewDatabaseUserRepo(s.database)
-	// panic("implement me!") // actualizar esto de acuerdo a docu del API
+	birthDate, _ := time.Parse("2006-01-02", updatedProfile.BirthDate)
 	user := domain.User{
-		Model:    gorm.Model{ID: userId},
-		Name:     updatedProfile.Name,
-		LastName: updatedProfile.LastName,
-		Email:    strings.ToLower(updatedProfile.Email),
-		Country:  strings.ToLower(updatedProfile.Country),
-		Gender:   strings.ToLower(updatedProfile.Gender),
+		Model:      gorm.Model{ID: userId},
+		UserName:   strings.ToLower(updatedProfile.UserName),
+		Name:       updatedProfile.Name,
+		LastName:   updatedProfile.LastName,
+		BirthDate:  birthDate,
+		Email:      strings.ToLower(updatedProfile.Email),
+		Gender:     updatedProfile.Gender,
+		IsStudent:  updatedProfile.IsStudent,
+		IsTeacher:  updatedProfile.IsTeacher,
+		SchoolYear: updatedProfile.SchoolYear,
+		Country:    updatedProfile.Country,
+		Province:   updatedProfile.Province,
+		Department: updatedProfile.Department,
+		Location:   updatedProfile.Location,
+		School:     updatedProfile.School,
 	}
 	err := userRepo.Update(&user)
 	return &user, err

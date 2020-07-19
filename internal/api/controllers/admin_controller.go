@@ -42,28 +42,7 @@ func (a *adminController) GetAllProblems(context *gin.Context) {
 }
 
 func (a *adminController) GetAllProblemsStats(context *gin.Context) {
-	problems := admin.NewService(a.database).GetAllProblems()
-	var problemAdminStats = make([]domain.ProblemAdminStatsApp, len(problems.Problems))
-	for i, problem := range problems.Problems {
-		allAttempts := admin.NewService(a.database).GetAllProblemAttempts(problem.ProblemId)
-		problemAdminStats[i].ProblemId = problem.ProblemId
-		problemAdminStats[i].NumberInSeries = problem.NumberInSeries
-		problemAdminStats[i].IsCurrentProblem = problem.IsCurrentProblemAdminApp()
-		problemAdminStats[i].Tags = problem.Tags
-		setUsers := make(map[uint]bool)
-		for _, attempt := range allAttempts {
-			problemAdminStats[i].Attempts++
-			if attempt.IsCorrect {
-				problemAdminStats[i].SolvedCount++
-				setUsers[attempt.UserId] = true
-				if attempt.DuringContest {
-					problemAdminStats[i].SolvedDuringContestCount++
-				}
-			}
-		}
-		problemAdminStats[i].SolvedDistinctCount = len(setUsers)
-	}
-	context.JSON(http.StatusOK, problemAdminStats)
+	context.JSON(http.StatusOK, admin.NewService(a.database).GetStats())
 }
 
 func (a *adminController) GetProblem(context *gin.Context) {
@@ -94,7 +73,11 @@ func (a *adminController) PostProblem(context *gin.Context) {
 
 func (a *adminController) PutProblem(context *gin.Context) {
 	var updatedProblem domain.ProblemAdminApp
-	_ = context.Bind(&updatedProblem)
+	err := context.Bind(&updatedProblem)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
 	problemId := params.GetProblemID(context)
 	updatedProblemObject, err := admin.NewService(a.database).UpdateProblem(problemId, updatedProblem)
 	if err != nil {

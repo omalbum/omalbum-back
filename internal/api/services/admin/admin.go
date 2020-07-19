@@ -15,10 +15,36 @@ type Service interface {
 	CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error)
 	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.ProblemAdminApp, error)
 	DeleteProblem(problemId uint) error
+	GetStats() []domain.ProblemAdminStatsApp
 }
 
 type service struct {
 	database *db.Database
+}
+
+func (s *service) GetStats() []domain.ProblemAdminStatsApp {
+	problems := s.GetAllProblems()
+	var problemAdminStats = make([]domain.ProblemAdminStatsApp, len(problems.Problems))
+	for i, problem := range problems.Problems {
+		allAttempts := s.GetAllProblemAttempts(problem.ProblemId)
+		problemAdminStats[i].ProblemId = problem.ProblemId
+		problemAdminStats[i].NumberInSeries = problem.NumberInSeries
+		problemAdminStats[i].IsCurrentProblem = problem.IsCurrentProblemAdminApp()
+		problemAdminStats[i].Tags = problem.Tags
+		setUsers := make(map[uint]bool)
+		for _, attempt := range allAttempts {
+			problemAdminStats[i].Attempts++
+			if attempt.IsCorrect {
+				problemAdminStats[i].SolvedCount++
+				setUsers[attempt.UserId] = true
+				if attempt.DuringContest {
+					problemAdminStats[i].SolvedDuringContestCount++
+				}
+			}
+		}
+		problemAdminStats[i].SolvedDistinctCount = len(setUsers)
+	}
+	return problemAdminStats
 }
 
 func (s *service) GetAllProblems() domain.AllProblemsAdminApp {

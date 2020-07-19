@@ -111,15 +111,15 @@ type ProblemStatsApp struct {
 }
 
 type ProblemAdminStatsApp struct {
-	ProblemId                   uint      `json:"problem_id"`
-	Attempts                    uint      `json:"attempts"`
-	SolvedCount                 uint      `json:"solved"`
-	SolvedDistinctCount         int      `json:"solved_distinct"`
-	SolvedDuringContestCount    uint      `json:"solved_during_contest"`
-	IsCurrentProblem            bool      `json:"is_current_problem"`
-	Series                      string    `json:"series"`
-	NumberInSeries              uint      `json:"number_in_series"`
-	Tags                        []string  `json:"tags"`
+	ProblemId                uint     `json:"problem_id"`
+	Attempts                 uint     `json:"attempts"`
+	SolvedCount              uint     `json:"solved"`
+	SolvedDistinctCount      int      `json:"solved_distinct"`
+	SolvedDuringContestCount uint     `json:"solved_during_contest"`
+	IsCurrentProblem         bool     `json:"is_current_problem"`
+	Series                   string   `json:"series"`
+	NumberInSeries           uint     `json:"number_in_series"`
+	Tags                     []string `json:"tags"`
 }
 
 type ProblemAttemptsByUserApp struct {

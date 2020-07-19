@@ -66,7 +66,7 @@ func (dr *databaseProblemRepo) Update(problem *domain.Problem) error {
 	}
 	if !problemOld.IsDraft {
 		problem.Series = problemOld.Series // this should not be changed!
-               problem.NumberInSeries = problemOld.NumberInSeries
+		problem.NumberInSeries = problemOld.NumberInSeries
 	}
 	if dr.database.DB.Model(problem).Update(problem).RowsAffected == 0 {
 		return messages.New("unknown_error_updating_problem", "unknown error updating problem")

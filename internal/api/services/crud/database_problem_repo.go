@@ -58,6 +58,7 @@ func (dr *databaseProblemRepo) Update(problem *domain.Problem) error {
 	if problemOld == nil {
 		return messages.New("problem_not_found", "problem not found")
 	}
+	problem.PoserId = problemOld.PoserId
 	if problem.IsDraft && !problemOld.IsDraft {
 		return messages.New("cannot_convert_to_draft", "cannot convert problem to draft")
 	}
@@ -68,10 +69,7 @@ func (dr *databaseProblemRepo) Update(problem *domain.Problem) error {
 		problem.Series = problemOld.Series // this should not be changed!
 		problem.NumberInSeries = problemOld.NumberInSeries
 	}
-	if dr.database.DB.Model(problem).Update(problem).RowsAffected == 0 {
-		return messages.New("unknown_error_updating_problem", "unknown error updating problem")
-	}
-	return nil
+	return dr.database.DB.Save(problem).Error
 }
 
 func (dr *databaseProblemRepo) Delete(problemId uint) error {

@@ -5,12 +5,11 @@ import (
 	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"time"
 )
 
 type Service interface {
 	GetAllProblems() domain.AllProblemsAdminApp
-	GetProblem(problemId uint) (domain.ProblemAdminApp, error)
+	GetProblem(problemId uint) (*domain.ProblemAdminApp, error)
 	CreateProblem(poserId uint, newProblem domain.ProblemAdminApp) (*domain.Problem, error)
 	UpdateProblem(problemId uint, updatedProblem domain.ProblemAdminApp) (*domain.ProblemAdminApp, error)
 	DeleteProblem(problemId uint) error
@@ -68,10 +67,10 @@ func (s *service) GetAllProblems() domain.AllProblemsAdminApp {
 	return allProblemsAdmin
 }
 
-func (s *service) GetProblem(problemId uint) (domain.ProblemAdminApp, error) {
+func (s *service) GetProblem(problemId uint) (*domain.ProblemAdminApp, error) {
 	problem := crud.NewDatabaseProblemRepo(s.database).GetById(problemId)
 	if problem == nil {
-		return domain.ProblemAdminApp{}, messages.NewNotFound("problem_not_found", "problem not found")
+		return nil, messages.NewNotFound("problem_not_found", "problem not found")
 	}
 	problemAdminApp := problemToProblemAdminApp(*problem)
 	problemAdminApp.ProblemId = problemId
@@ -81,7 +80,7 @@ func (s *service) GetProblem(problemId uint) (domain.ProblemAdminApp, error) {
 		tags[i] = problemTag.Tag
 	}
 	problemAdminApp.Tags = tags
-	return problemAdminApp, nil
+	return &problemAdminApp, nil
 }
 
 func (s *service) DeleteProblem(problemId uint) error {
@@ -130,14 +129,12 @@ func (s *service) UpdateProblem(problemId uint, updatedProblem domain.ProblemAdm
 	problemTagRepo := crud.NewDatabaseProblemTagRepo(s.database)
 	problemTagRepo.DeleteAllTagsByProblemId(problemId)
 	problemTagRepo.CreateByProblemIdAndTags(problemId, updatedProblem.Tags)
-	updateProblemAdminApp := problemToProblemAdminApp(problem)
-	return &updateProblemAdminApp, nil
+	return s.GetProblem(problem.ID)
 }
 
 func problemAdminAppToProblem(newProblem domain.ProblemAdminApp) domain.Problem {
 	return domain.Problem{
 		OmaforosPostId:   newProblem.OmaforosPostId,
-		DateUploaded:     time.Now(),
 		DateContestStart: newProblem.ReleaseDate,
 		DateContestEnd:   newProblem.Deadline,
 		Series:           newProblem.Series,

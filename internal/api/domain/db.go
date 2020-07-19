@@ -45,7 +45,6 @@ type Problem struct {
 	gorm.Model
 	PoserId          uint
 	OmaforosPostId   uint
-	DateUploaded     time.Time
 	DateContestStart time.Time
 	DateContestEnd   time.Time
 	Statement        string `gorm:"type:longtext;unique_index"`

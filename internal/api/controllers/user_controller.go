@@ -68,10 +68,13 @@ func (u *userController) PutUser(context *gin.Context) {
 		return
 	}
 	var updatedProfile domain.RegistrationApp // same payload format as register user
-	_ = context.Bind(&updatedProfile)
-
+	err := context.Bind(&updatedProfile)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
 	userService := users.NewService(u.database, u.mailer)
-	err := userService.UpdateUserProfile(userID, updatedProfile)
+	err = userService.UpdateUserProfile(userID, updatedProfile)
 
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
@@ -105,9 +108,13 @@ func (u *userController) PutPassword(context *gin.Context) {
 
 func (u *userController) ResetPassword(context *gin.Context) {
 	var emailWrappedApp domain.EmailWrappedApp
-	_ = context.Bind(&emailWrappedApp)
+	err := context.Bind(&emailWrappedApp)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
 	email := emailWrappedApp.Email
-	err := users.NewService(u.database, u.mailer).ResetPassword(email)
+	err = users.NewService(u.database, u.mailer).ResetPassword(email)
 
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)
@@ -148,7 +155,11 @@ func (u *userController) GetProblemAttemptsByUser(context *gin.Context) {
 func (u *userController) PostAnswer(context *gin.Context) {
 	userID := params.GetCallerID(context)
 	var problemAttemptApp domain.ProblemAttemptApp
-	_ = context.Bind(&problemAttemptApp)
+	err := context.Bind(&problemAttemptApp)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
 	result, err := users.NewService(u.database, u.mailer).PostAnswer(userID, problemAttemptApp)
 	if err != nil {
 		context.JSON(messages.GetHttpCode(err), err)

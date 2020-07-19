@@ -18,7 +18,7 @@ type AdminController interface {
 	PutProblem(context *gin.Context)
 	DeleteProblem(context *gin.Context)
 	GetAllProblems(context *gin.Context)
-	GetAllProblemsStats(context *gin.Context)
+	GetStats(context *gin.Context)
 }
 
 type adminController struct {
@@ -41,7 +41,7 @@ func (a *adminController) GetAllProblems(context *gin.Context) {
 	context.JSON(http.StatusOK, problems)
 }
 
-func (a *adminController) GetAllProblemsStats(context *gin.Context) {
+func (a *adminController) GetStats(context *gin.Context) {
 	context.JSON(http.StatusOK, admin.NewService(a.database).GetStats())
 }
 

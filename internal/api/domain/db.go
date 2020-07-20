@@ -51,12 +51,12 @@ type Problem struct {
 	OmaforosPostId   uint
 	DateContestStart time.Time
 	DateContestEnd   time.Time
-	Statement        string `gorm:"type:longtext;unique_index"`
+	Statement        string `gorm:"type:longtext;"`
 	Answer           int
-	Annotations      string `gorm:"type:longtext;unique_index"`
+	Annotations      string `gorm:"type:longtext;"`
 	IsDraft          bool
-	Hint             string `gorm:"type:longtext;unique_index"`
-	OfficialSolution string `gorm:"type:longtext;unique_index"`
+	Hint             string `gorm:"type:longtext;"`
+	OfficialSolution string `gorm:"type:longtext;"`
 	Series           string
 	NumberInSeries   uint
 }

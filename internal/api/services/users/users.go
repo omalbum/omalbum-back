@@ -33,11 +33,10 @@ type service struct {
 }
 
 func (s *service) ChangePasswordNoChecks(userID uint, newPassword string) error {
-	user := &domain.User{
-		Model:          gorm.Model{ID: userID},
-		HashedPassword: crypto.HashAndSalt(newPassword),
-	}
-	return crud.NewDatabaseUserRepo(s.database).Update(user)
+	repo := crud.NewDatabaseUserRepo(s.database)
+	user := repo.GetByID(userID)
+	user.HashedPassword = crypto.HashAndSalt(newPassword)
+	return repo.Update(user)
 }
 
 func (s *service) GetAlbum(userId uint) (*domain.AlbumApp, error) {

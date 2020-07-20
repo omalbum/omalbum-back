@@ -252,6 +252,9 @@ func (s *service) UpdateUserProfile(userID uint, updatedProfile domain.Registrat
 	if userRepo.GetByEmail(updatedProfile.Email) != nil && u.Email != updatedProfile.Email {
 		return nil, messages.NewConflict("email_already_taken", "email already taken")
 	}
+	if !crypto.IsHashedPasswordEqualWithPlainPassword(u.HashedPassword, updatedProfile.Password) {
+		return nil, messages.NewConflict("wrong_password", "wrong password")
+	}
 
 	err := updatedProfile.ValidateWithoutPassword()
 	if err != nil {

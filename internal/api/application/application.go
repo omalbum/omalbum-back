@@ -24,7 +24,7 @@ type Application struct {
 	UserController        controllers.UserController
 	AdminController       controllers.AdminController
 	ProblemsController    controllers.ProblemsController
-	SchoolController      controllers.SchoolController
+	//SchoolController      controllers.SchoolController
 }
 
 func BuildApplication(db *db.Database) *Application {
@@ -46,7 +46,7 @@ func BuildApplication(db *db.Database) *Application {
 	userController := controllers.NewUserController(db, manager, mail)
 	adminController := controllers.NewAdminController(db, manager)
 	problemsController := controllers.NewProblemsController(db, manager, teleOMACache)
-	schoolController := controllers.NewSchoolController(db)
+	//schoolController := controllers.NewSchoolController(db)
 	return &Application{
 		AuthMiddleware:        authMiddleware,
 		AdminMiddleware:       adminMiddleware,
@@ -55,7 +55,7 @@ func BuildApplication(db *db.Database) *Application {
 		UserController:        userController,
 		AdminController:       adminController,
 		ProblemsController:    problemsController,
-		SchoolController:      schoolController,
+		//SchoolController:      schoolController,
 	}
 }
 

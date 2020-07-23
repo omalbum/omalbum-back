@@ -15,6 +15,7 @@ func DropTables(db *db.Database) {
 		&domain.ProblemTag{},
 		&domain.Problem{},
 		&domain.User{},
+		//&domain.School{},
 	)
 }
 
@@ -26,7 +27,7 @@ func CreateTables(db *db.Database) {
 		&domain.UserProblemAttempt{},
 		&domain.ProblemTag{},
 		&domain.UserAction{},
-		&domain.School{},
+		//&domain.School{},
 	)
 }
 

@@ -200,8 +200,9 @@ type ProblemAttemptApp struct {
 	Answer    int  `json:"answer"`
 }
 type AttemptResultApp struct {
-	Result   string    `json:"result"`
-	Deadline time.Time `json:"deadline"`
+	Result      string    `json:"result"`
+	Deadline    time.Time `json:"deadline"`
+	AttemptDate time.Time `json:"attempt_date"`
 }
 
 type SchoolsApp struct {

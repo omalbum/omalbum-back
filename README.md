@@ -7,6 +7,7 @@
 3. Clone the repo
 
 ## Build and Run
+
 If you want to build and run the project from the command line, follow this steps.
 
 1. CD to the appropriate directory

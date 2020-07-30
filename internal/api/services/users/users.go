@@ -147,6 +147,7 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 	res := domain.AttemptResultApp{
 		Deadline: problem.DateContestEnd,
 		Result:   getResult(problem.Answer, attempt.UserAnswer, isContest),
+		AttemptDate: attempt.Date,
 	}
 	return &res, nil
 }

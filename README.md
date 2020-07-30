@@ -40,7 +40,11 @@ docker run -it --rm --name mysql-teleoma -p 3306:3306 -v db-data:/var/lib/mysql-
 ```
 
 ## Build and Run on Testing Server 
-PENDING
+1. Tag a commit as a release version with the following rule:
+``` vM.m.pRC ``` being M: Major version, m: minor version and p: patch
+2. Push tag:
+``` git push --tag ```
+
 
 
 ## Build and Run on Production Server

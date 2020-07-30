@@ -21,7 +21,15 @@ func New(restClient sendgrid.RestClient, templateLoader TemplateLoader) Mailer {
 }
 
 func (m *mailer) SendSuccessfulRegistration(email, name string) {
-	panic("implement me")
+	content := m.templateLoader.load(RegisterTemplate)
+	content = replaceTemplateVar(content, "{{name}}", name)
+	err := m.restClient.Send(SubjectRegister, From, email, content)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	log.Print("Registration mail sent to " + email)
+
 }
 
 func (m *mailer) SendPasswordChange(email, name string, newPassword string) {
@@ -34,18 +42,6 @@ func (m *mailer) SendPasswordChange(email, name string, newPassword string) {
 		return
 	}
 	log.Print("Password change mail sent to " + email)
-}
-
-func (m *mailer) sendMail(email, name, content string) {
-	content = replaceTemplateVar(content, "{{name}}", name)
-
-	err := m.restClient.Send(Subject, From, email, content)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	log.Print("Registration mail sent to " + email)
 }
 
 func replaceTemplateVar(content, key, value string) string {

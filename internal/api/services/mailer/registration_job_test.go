@@ -1,9 +1,9 @@
 package mailer
 
 import (
-	"github.com/go-playground/assert/v2"
 	"github.com/miguelsotocarlos/teleoma/internal/api/clients/sendgrid"
 	"github.com/spf13/afero"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 

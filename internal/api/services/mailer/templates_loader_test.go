@@ -12,7 +12,7 @@ func TestLoadTemplateOk(t *testing.T) {
 
 	templateLoader := NewTemplateLoader(fs)
 
-	assert.Equal(t, "Hola {{name}} tu nueva password es {{password}}", templateLoader.load(ChangePasswordTemplate))
+	assert.Equal(t, `Hola {{name}},\n tu nueva contraseña de OMAlbum es {{password}}\n La podrás modificar desde tu perfil de OMAlbum.\n Saludos,\n El equipo de OMAlbum`, templateLoader.load(ChangePasswordTemplate))
 }
 
 func TestLoadTemplateNotOk(t *testing.T) {

@@ -27,7 +27,7 @@ func main() {
 	crud.CreateTables(database)
 	crud.CreateForeignKeys(database)
 	crud.CreateAnonymousUser(database) // this user should be created first in order to have ID=1
-	crud.CreateAdminUser(database)
+	//crud.CreateAdminUser(database)
 	crud.CreateSampleData(database)
 	log.Print("Tables created")
 }

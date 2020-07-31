@@ -145,8 +145,8 @@ func (s *service) PostAnswer(userID uint, attemptApp domain.ProblemAttemptApp) (
 		return nil, messages.NewBadRequest("error", "error") // esto puede ocurrir?
 	}
 	res := domain.AttemptResultApp{
-		Deadline: problem.DateContestEnd,
-		Result:   getResult(problem.Answer, attempt.UserAnswer, isContest),
+		Deadline:    problem.DateContestEnd,
+		Result:      getResult(problem.Answer, attempt.UserAnswer, isContest),
 		AttemptDate: attempt.Date,
 	}
 	return &res, nil
@@ -198,8 +198,8 @@ func (s *service) CreateUser(registrationApp domain.RegistrationApp) (*domain.Us
 
 	if err == nil {
 		// Send the mail in a non-blocking way
-		// registrationJob := mailer.NewRegistrationJob(r.mailer, registrationApp.Email, registrationApp.Name)
-		// jobrunner.Now(registrationJob)
+		registrationJob := mailer.NewRegistrationJob(s.mailer, registrationApp.Email, registrationApp.UserName)
+		jobrunner.Now(registrationJob)
 	}
 
 	return &user, err

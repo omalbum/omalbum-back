@@ -1,26 +1,28 @@
 package mailer
 
 import (
+	"github.com/miguelsotocarlos/teleoma/internal/api/clients/sendgrid"
+	"github.com/spf13/afero"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestRegistrationJob(t *testing.T) {
 	// deshabilitado por ahora
-	/*
-		sendGridRestClientMock := sendgrid.NewRestClientMock()
 
-		fs := afero.NewMemMapFs()
-		createSampleFiles(fs)
+	sendGridRestClientMock := sendgrid.NewRestClientMock()
 
-		mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
+	fs := afero.NewMemMapFs()
+	createSampleFiles(fs)
 
-		job := NewRegistrationJob(mailer, "algo@nada.com", "name")
-		job.Run()
+	mailer := New(sendGridRestClientMock, NewTemplateLoader(fs))
 
-		res := sendGridRestClientMock.(*sendgrid.RestClientMock)
+	job := NewRegistrationJob(mailer, "algo@nada.com", "name")
+	job.Run()
 
-		assert.Equal(t, Subject, res.Subject)
-		assert.Equal(t, From, res.From)
-		assert.Equal(t, "algo@nada.com", res.To)
-	*/
+	res := sendGridRestClientMock.(*sendgrid.RestClientMock)
+
+	assert.Equal(t, SubjectRegister, res.Subject)
+	assert.Equal(t, From, res.From)
+	assert.Equal(t, "algo@nada.com", res.To)
 }

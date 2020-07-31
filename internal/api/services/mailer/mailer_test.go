@@ -24,5 +24,5 @@ func TestSendPasswordChange(t *testing.T) {
 	assert.Equal(t, SubjectPasswordChange, res.Subject)
 	assert.Equal(t, From, res.From)
 	assert.Equal(t, email, res.To)
-	assert.Equal(t, "Hola pepe tu nueva password es "+newPassword, res.Content)
+	assert.Equal(t, `Hola pepe,\n tu nueva contraseña de OMAlbum es `+newPassword+`\n La podrás modificar desde tu perfil de OMAlbum.\n Saludos,\n El equipo de OMAlbum`, res.Content)
 }

@@ -9,7 +9,7 @@ type template string
 const (
 	SubjectRegister       string = "Ya tenés tu cuenta de OMAlbum!"
 	SubjectPasswordChange string = "OMAlbum - Cambio de contraseña"
-	From                  string = "omalbum.ok@gmail.com"
+	From                  string = "notificaciones.omalbum@gmail.com"
 
 	RegisterTemplate       template = "RegisterTemplate"
 	ChangePasswordTemplate template = "ChangePasswordTemplate"

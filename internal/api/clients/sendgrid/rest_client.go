@@ -84,5 +84,5 @@ func (r *restClient) Send(subject, from, to, content string) error {
 		return nil
 	}
 
-	return messages.New("sendgrid_error", "SendGrid API returned error: "+  strconv.Itoa(response.StatusCode()))
+	return messages.New("sendgrid_error", "SendGrid API returned error: "+strconv.Itoa(response.StatusCode()))
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -83,5 +84,5 @@ func (r *restClient) Send(subject, from, to, content string) error {
 		return nil
 	}
 
-	return messages.New("sendgrid_error", "SendGrid API returned error: "+string(response.StatusCode()))
+	return messages.New("sendgrid_error", "SendGrid API returned error: "+strconv.Itoa(response.StatusCode()))
 }

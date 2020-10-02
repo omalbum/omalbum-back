@@ -19,3 +19,4 @@ jobs:
         port: ${{ secrets.PORT }}
         script: bash -x /home/deployer/teleoma-infra/scripts/teleoma-api.sh ${{ steps.get_version.outputs.VERSION }} >> /var/log/teleoma/teleoma-deployer
         key: ${{ secrets.KEY }}
+

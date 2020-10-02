@@ -1,5 +1,15 @@
 # OMAlbum API
 
+## Contributors
+
+The base for this repository (initial commit) was mostly written by Carlos Desseno.
+
+- Iván Sadofschi Costa
+
+- Sebastián Cherny
+
+- Carlos Miguel Soto 
+
 ## Setup
 
 1. Install go (1.14.1+) following the [instructions](https://golang.org/dl/).

@@ -29,3 +29,4 @@ jobs:
     - name: Test
       working-directory: .
       run: go test -v -short -race ./...
+

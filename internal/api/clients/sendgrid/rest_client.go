@@ -2,7 +2,7 @@ package sendgrid
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+	"github.com/omalbum/omalbum-back/internal/api/messages"
 	"net/http"
 	"strconv"
 )

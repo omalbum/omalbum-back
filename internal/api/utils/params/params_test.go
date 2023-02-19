@@ -2,7 +2,7 @@ package params
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/testing_util"
+	"github.com/omalbum/omalbum-back/internal/api/utils/testing_util"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

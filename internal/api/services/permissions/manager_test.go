@@ -2,13 +2,13 @@ package permissions
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/testing_util"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/services/crud"
+	"github.com/omalbum/omalbum-back/internal/api/utils/check"
+	"github.com/omalbum/omalbum-back/internal/api/utils/crypto"
+	"github.com/omalbum/omalbum-back/internal/api/utils/params"
+	"github.com/omalbum/omalbum-back/internal/api/utils/testing_util"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

@@ -1,9 +1,9 @@
 package schools
 
 import (
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/services/crud"
 )
 
 type Service interface {

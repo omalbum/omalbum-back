@@ -2,8 +2,8 @@ package crud
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
 )
 
 type databaseUserActionRepo struct {

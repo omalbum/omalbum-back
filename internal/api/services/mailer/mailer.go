@@ -1,7 +1,7 @@
 package mailer
 
 import (
-	"github.com/miguelsotocarlos/teleoma/internal/api/clients/sendgrid"
+	"github.com/omalbum/omalbum-back/internal/api/clients/sendgrid"
 	"log"
 	"strings"
 )

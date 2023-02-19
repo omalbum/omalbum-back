@@ -1,13 +1,13 @@
 package users
 
 import (
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
-	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/mailer"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/crypto"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/messages"
+	"github.com/omalbum/omalbum-back/internal/api/services/crud"
+	"github.com/omalbum/omalbum-back/internal/api/services/mailer"
+	"github.com/omalbum/omalbum-back/internal/api/utils/check"
+	"github.com/omalbum/omalbum-back/internal/api/utils/crypto"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

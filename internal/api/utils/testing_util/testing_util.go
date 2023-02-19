@@ -2,7 +2,7 @@ package testing_util
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/db"
 	"net/http/httptest"
 )
 

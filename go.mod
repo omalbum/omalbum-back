@@ -6,7 +6,7 @@ require (
 	github.com/appleboy/gin-jwt/v2 v2.6.3
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/gin-contrib/cors v1.3.1
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-ozzo/ozzo-validation/v4 v4.1.0
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/jarcoal/httpmock v1.0.5

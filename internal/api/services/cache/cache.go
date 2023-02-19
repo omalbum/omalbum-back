@@ -2,7 +2,7 @@ package cache
 
 import (
 	"github.com/karlseguin/ccache/v2"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
 	"time"
 )
 

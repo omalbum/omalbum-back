@@ -1,6 +1,6 @@
 FROM golang:1.14.1
 
-WORKDIR /go/src/github.com/miguelsotocarlos/teleoma
+WORKDIR /go/src/github.com/omalbum/omalbum-back
 
 COPY go.mod .
 COPY go.sum .

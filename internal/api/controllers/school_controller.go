@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/schools"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/services/schools"
+	"github.com/omalbum/omalbum-back/internal/api/utils/params"
 	"net/http"
 )
 

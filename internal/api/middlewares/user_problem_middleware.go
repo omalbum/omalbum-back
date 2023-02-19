@@ -2,11 +2,11 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/permissions"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/params"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/services/crud"
+	"github.com/omalbum/omalbum-back/internal/api/services/permissions"
+	"github.com/omalbum/omalbum-back/internal/api/utils/params"
 	"net/http"
 )
 

@@ -1,7 +1,7 @@
 package mailer
 
 import (
-	"github.com/miguelsotocarlos/teleoma/internal/api/config"
+	"github.com/omalbum/omalbum-back/internal/api/config"
 	"github.com/spf13/afero"
 	"log"
 )

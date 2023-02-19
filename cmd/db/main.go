@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/miguelsotocarlos/teleoma/internal/api/config"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/services/crud"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
+	"github.com/omalbum/omalbum-back/internal/api/config"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/services/crud"
+	"github.com/omalbum/omalbum-back/internal/api/utils/check"
 	"log"
 )
 

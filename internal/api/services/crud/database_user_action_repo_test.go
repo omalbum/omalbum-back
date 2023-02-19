@@ -1,9 +1,9 @@
 package crud
 
 import (
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
-	"github.com/miguelsotocarlos/teleoma/internal/api/domain"
-	"github.com/miguelsotocarlos/teleoma/internal/api/utils/check"
+	"github.com/omalbum/omalbum-back/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/domain"
+	"github.com/omalbum/omalbum-back/internal/api/utils/check"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"

@@ -3,8 +3,8 @@ package middlewares
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/miguelsotocarlos/teleoma/internal/api/config"
-	"github.com/miguelsotocarlos/teleoma/internal/api/db"
+	"github.com/omalbum/omalbum-back/internal/api/config"
+	"github.com/omalbum/omalbum-back/internal/api/db"
 	"log"
 	"time"
 )

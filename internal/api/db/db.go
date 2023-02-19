@@ -5,8 +5,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/miguelsotocarlos/teleoma/internal/api/config"
-	"github.com/miguelsotocarlos/teleoma/internal/api/messages"
+	"github.com/omalbum/omalbum-back/internal/api/config"
+	"github.com/omalbum/omalbum-back/internal/api/messages"
 	"log"
 )
 
